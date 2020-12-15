@@ -6,10 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Simran Makhija",
+  "author": "Simran Makhija and Sonali Patel",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "hbs": "^4.1.1",
     "mysql": "^2.18.1"
   }
 }
