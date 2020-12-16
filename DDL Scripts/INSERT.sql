@@ -104,6 +104,14 @@ VALUES ('jlilly',1, 'Amazing work');
 INSERT into author_reviews (username,auth_id,review) 
 VALUES ('toms',2, 'Nice read');
 
+-- INSERT author ratings
+insert into author_ratings(username,auth_id,stars)
+values('toms',1,5);
+insert into author_ratings(username,auth_id,stars)
+values('toms',2,4);
+insert into author_ratings(username,auth_id,stars)
+values('jdoe',2,2);
+
 
 
 

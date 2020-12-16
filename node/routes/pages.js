@@ -47,15 +47,49 @@ router.get('/user/:username',(req,res)=>{
 });
 
 router.get('/books',(req,res)=>{
-    var sql = 'SELECT title, Fname_auth, Lname_auth FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
+    var sql = 'SELECT title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
         }
+        
+        results.forEach(e => {
+            e['auth_link']='/author/'+e['auth_id']
+        });
+        console.log(results)
         res.render('booklist',{title:'List',Data: results});
     });
 });
 
+router.get('/author/:id', (req, res) => {
+    var sql = 'SELECT * FROM author WHERE auth_id=?'
+    conn.query(sql, req.params.id, function (err, results, fields) {
+        if (err) console.log("error :" + err)
+        var authData = results[0]
+        conn.query('select AVG(stars) as stars from author_ratings where auth_id=?',
+            authData.auth_id,
+            (err, rating , fields) => {
+                if (err) console.log("error :" + err)
+                var stars = rating[0].stars
+                conn.query(
+                    'select * from author_reviews where auth_id =? ',
+                    authData.auth_id,
+                    (e, r, f) => {
+                        if (e) console.log("e:" + e)
+                        res.render('author', {
+                            name: authData.Fname_auth+" "+authData.Lname_auth,
+                            bio: authData.bio,
+                            rating: stars,
+                            reviews: r
+                        })
+                    }
+                )
+                
+            }
+        )        
+        
+    })
+})
 
 
 module.exports = router;
