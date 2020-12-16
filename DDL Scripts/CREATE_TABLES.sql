@@ -21,7 +21,7 @@ CREATE TABLE book(
     cover_img VARCHAR(500),
     pages INT NOT NULL CHECK(pages>0) ,
     synopsis VARCHAR(700),
-    date_of_publication DATE NOT NULL CHECK (date_of_publication LIKE '--/--/----') ,
+    date_of_publication DATE NOT NULL ,
     PRIMARY KEY (isbn,edition)
 );
 

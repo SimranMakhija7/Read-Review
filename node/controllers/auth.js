@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs');
 const mysql = require('mysql');
 
+const dotenv  = require('dotenv');
+
+dotenv.config({ path:'./.env' });
+
 var config =
 {
 	host: process.env.HOST,
@@ -38,7 +42,9 @@ exports.login = async (req,res) => {
                     })  
                 }
             }
-            res.status(200).redirect("/user/"+username);
+           
+            res.status(200).redirect("/user/" + username);
+            
         })
     }catch(error){
         console.log(error);
