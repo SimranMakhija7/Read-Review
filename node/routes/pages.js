@@ -49,15 +49,17 @@ router.get('/user/:username',(req,res)=>{
 });
 
 router.get('/books',(req,res)=>{
-    var sql = 'SELECT title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
+    var sql = 'SELECT book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
         }
-
+        // console.log(results)
         results.forEach(e => {
-            e['auth_link']='/author/'+e['auth_id']
+            e['auth_link'] = '/author/' + e['auth_id']
+            e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
         });
+
         res.render('booklist',{title:'List',Data: results});
     })
 });
@@ -133,6 +135,60 @@ router.get('/bookshops/:id',(req,res) => {
         });
     })
 })
+router.get('/book/:isbn/:edition', (req, res) => {
+    var sql = `
+        SELECT cover_img, 
+        title, 
+        Fname_auth, Lname_auth,
+        publication_name, date_of_publication, 
+        synopsis, book.isbn, book.edition
+        FROM book, author, written_by 
+        WHERE 
+        book.isbn = ${req.params.isbn} 
+        and book.edition =  ${req.params.edition}
+        and book.isbn = written_by.isbn 
+        and author.auth_id = written_by.auth_id 
+        and book.edition = written_by.edition 
+    `    
+    conn.query(sql, (e, r, f) => {
+        if (e) console.log(e);
+        // console.log(r)
+        bookData = r[0]
+        // console.log(bookData.title)
+        conn.query(`
+        select AVG(stars) as stars 
+        from book_ratings
+        WHERE 
+        isbn = ${req.params.isbn} 
+        and edition =  ${req.params.edition}
+        `, (err, results, field) => {
+                if (err) console.log("err: " + err)
+                var rate = (results[0].stars)
+                conn.query(`
+                select * 
+                from book_reviews
+                WHERE 
+                isbn = ${req.params.isbn} 
+                and edition =  ${req.params.edition}
+                `, (err, reviews, field) => {
+                        if (err) console.log("err: " + err)
+                        res.render('book', {
+                            cover_img: bookData.cover_img,
+                            title: bookData.title,
+                            author: bookData.Fname_auth + " " + bookData.Lname_auth,
+                            publication_name: bookData.publication_name,
+                            synopsis: bookData.synopsis,
+                            rating: rate,
+                            reviews: reviews
+                        })
+                })
+         
+                
+        })
+        
+    })
+});
+
 
 router.post('/search',(req,res)=>{
     var strBook = req.body.booksearch;

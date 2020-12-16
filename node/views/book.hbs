@@ -11,17 +11,20 @@
     <nav>
         <h4>ReadnReview</h4>
         <ul>
-            <li>Bookshop</li>
+            <li>Home</li>
             <li><a href="/books">BooksList</a></li>
             <li><a href="/">Logout</a></li>
         </ul>
     </nav>
     <div class="container mt-4">
         <div class="card" style="width: 18rem;">
-            {{!-- <img src="..." class="card-img-top" alt="..."> --}}
+             <img src={{cover_img}} class="card-img-top" alt="...">
             <div class="card-body">
-                <h3 class="card-title">{{name}}</h3>
-                <p class="card-text">{{bio}}</p>
+                <h3 class="card-title">{{title}}</h3>
+                <h4>{{author}} </h4>
+                <p><em>{{publication_name}}</em></p>
+                <h6>{{date_of_publication}}</h6>
+                <p class="card-text">{{synopsis}}</p>
                 {{#if rating}}
                 <h5>Average rating: {{rating}} stars</h5>
                 {{else}}
