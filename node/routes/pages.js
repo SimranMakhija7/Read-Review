@@ -1,8 +1,9 @@
 const express = require('express');
 const mysql = require('mysql');
-
 const dotenv  = require('dotenv');
 dotenv.config({ path:'./.env' });
+
+
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ var config =
 	ssl: true
 };
 const conn = new mysql.createConnection(config);
+
 
 router.get('/',(req,res)=>{
     res.render('index');
@@ -39,10 +41,50 @@ router.get('/books',(req,res)=>{
         if(error){
             console.log('defgf'+error);
         }
-        res.render('booklist',{title:'List',Data: results});
+        res.render('booklist',{
+            title:'List',
+            Data: results, 
+ 
+        });
     });
 });
 
+router.post('/search',(req,res)=>{
+    var strBook = req.body.booksearch;
+    var strAuth = req.body.authorsearch;
 
+    console.log(strBook,strAuth);
+    if(strAuth && strBook){
+        conn.query('select book.title,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where title like"%'+strBook+'%" and (author.Fname_auth like"%'+strAuth+'%" or author.Lname_auth like"%'+strAuth+'%")',function(err, results, fields) {
+            if (err) throw err;
+            console.log(results);
+            res.render('search',{
+                title:'List',
+                Data: results,
+            })
+        });
+    }
+    else if(strBook){
+        //select book.title,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where title like '%ABC%';
+        conn.query('select book.title,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where title like"%'+strBook+'%"',function(err, results, fields) {
+            if (err) throw err;
+            console.log(results);
+            res.render('search',{
+                title:'List',
+                Data: results,
+            })
+        });
+    }
+    else if(strAuth){
+        conn.query('select book.title,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where author.Fname_auth like"%'+strAuth+'%" or author.Lname_auth like"%'+strAuth+'%"',function(err, results, fields) {
+            if (err) throw err;
+            console.log(results);
+            res.render('search',{
+                title:'List',
+                Data: results,
+            })
+        });
+    }
+});
 
 module.exports = router;

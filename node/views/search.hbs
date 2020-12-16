@@ -18,30 +18,16 @@
             <li><a href="/">Logout</a></li>
         </ul>
     </nav>
-    <div class="container mt-3 row-4">
-        <form method="POST" action="/search">
-            <input type="text" class="form-control" id="booksearch" name="booksearch" placeholder="Search by Book Title" >
-            <br>
-            <input type="text" class="form-control" id="authorsearch" name="authorsearch" placeholder="Search by Author" >
-            <br>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-        <br>
-        
-    </div>
+
     <div class="container mt-4">
-        <h3>LIST OF BOOKS</h3>
+        <h3>SEARCH LIST</h3>
         <hr>
         <table>
-            <tr>
-                <th><h4>TITLE</h4></th>
-                <th><h4>AUTHOR NAME</h4></th>
-            </tr> 
             {{#each Data }}
             <tr>
-                <th><a href="">{{title}}</a></th>  
+                <th><a href="">{{title}}</a></th>    
                 <th><a href="">{{Fname_auth}} {{Lname_auth}}</a></th>
-            </tr>    
+            </tr>   
             {{/each}}
 
         </table>

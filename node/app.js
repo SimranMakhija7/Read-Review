@@ -30,6 +30,7 @@ conn.connect(
 	function (err) { 
 	if (err) { 
 		console.log("!!! Cannot connect !!! Error:");
+		console.log(error);
 		throw err;
 	}
 	else
