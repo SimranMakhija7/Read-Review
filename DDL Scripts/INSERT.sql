@@ -115,7 +115,29 @@ values('jdoe',2,2);
 
 
 
+-- INSERT into bookshop
+insert into bookshop (name,street_no,street_name,city,state)
+VALUES ('Book Mountains',4,'Gandhi Road','Indore','Madhya Pradesh');
 
+insert into bookshop (name,street_no,street_name,city,state)
+VALUES ('Book Paradise',40,'VLH Road','Bhopal','Madhya Pradesh');
+
+insert into bookshop (name,street_no,street_name,city,state)
+VALUES ('Reader Club',10,'Crawford Street','Mumbai','Maharashtra');
+
+insert into bookshop (name,street_no,street_name,city,state)
+VALUES ('Book n Coffee',13,'J19 Street','Indore','Madhya Pradesh');
+
+
+-- INSERT into has
+insert into has (isbn,edition,shop_id,quantity)
+values ('0140620427',1,1,10);
+
+insert into has (isbn,edition,shop_id,quantity)
+values ('9780008129545',1,1,15);
+
+insert into has (isbn,edition,shop_id,quantity)
+values ('9780008129545',1,3,5);
 
 
 

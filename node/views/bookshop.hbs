@@ -20,15 +20,23 @@
         <div class="card" style="width: 18rem;">
             {{!-- <img src="..." class="card-img-top" alt="..."> --}}
             <div class="card-body">
-                
-                <h5 class="card-title">{{username}}</h5>
-                <p class="card-text">{{email}}</p>
-                <p class="card-text">{{name}}</p>
-                <p class="card-text">{{location}}</p>
-                
-                
-                
-                <a href="#" class="btn btn-primary">Edit Profile</a>
+                {{#if bookData}}
+                    <h3 class="card-title">{{bookData.name}}</h3>
+                    <p class="card-text">{{bookData.street_no}}, {{bookData.street_name}}, {{bookData.city}}, {{bookData.state}}</p>
+                {{/if}}
+                {{#if data}}
+                    <h3 class="card-title">{{data.0.name}}</h3>
+                    <p class="card-text">{{data.0.street_no}}, {{data.0.street_name}}, {{data.0.city}}, {{data.0.state}}</p>
+                    <h5>Book Available</h5>
+                    <ul>
+                        {{#each data}}
+                            <li>{{title}}, {{publication_name}},Quantity:  {{ quantity}}</li>
+                           
+                        {{/each}}
+                    </ul>
+                {{/if}}
+                    
+                </div>
             </div>
         </div>
     </div>

@@ -62,6 +62,7 @@ router.get('/books',(req,res)=>{
     })
 });
 
+
 router.get('/author/:id', (req, res) => {
     var sql = 'SELECT * FROM author WHERE auth_id=?'
     conn.query(sql, req.params.id, function (err, results, fields) {
@@ -91,6 +92,47 @@ router.get('/author/:id', (req, res) => {
         
     })
 });
+
+
+router.get('/bookshops',(req,res)=>{
+    var sql = 'SELECT * from bookshop';
+    conn.query(sql,function (error,results,fields){
+        if(error){
+            console.log('error: '+error);
+        }
+        results.forEach(e => {
+            e['shop_link'] = '/bookshops/'+e['shop_id']
+        })
+        res.render('bookshoplist',{title:'List',Data: results});
+    })
+});
+
+router.get('/bookshops/:id',(req,res) => {
+    var sql = 'SELECT * FROM bookshop WHERE shop_id = ?'
+    conn.query(sql,req.params.id,function(error,results,field){
+        if(error)   console.log(error);
+        var bookData = results[0];
+      
+        conn.query('select name,edition,title,publication_name,quantity,street_no,street_name,city,state from ( bookshop natural join has )  natural join book where bookshop.shop_id = ?',
+        bookData.shop_id,
+        function(error,data,field) {
+            if(error){
+                console.log(error);
+            }
+            if(data.length > 0){
+                res.render('bookshop',{
+                    data: data
+                })
+            }else{
+                res.render('bookshop',{
+                    bookData:bookData
+                })
+            }
+            
+
+        });
+    })
+})
 
 router.post('/search',(req,res)=>{
     var strBook = req.body.booksearch;
