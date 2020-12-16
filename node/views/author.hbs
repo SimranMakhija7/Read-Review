@@ -22,13 +22,21 @@
             <div class="card-body">
                 <h3 class="card-title">{{name}}</h3>
                 <p class="card-text">{{bio}}</p>
-                <h5>Average rating: {{rating}}</h5>
-                <h6>Reviews</h6>
+                {{#if rating}}
+                <h5>Average rating: {{rating}} stars</h5>
+                {{else}}
+                <h5>No ratings yet!</h5>
+                {{/if}}
+                {{#if reviews}}
+                    <h5>Reviews</h5>
                     <ul>
                         {{#each reviews}}
                             <li>{{username}}: {{review}}</li>
                         {{/each}}
                     </ul>
+                {{else}}
+                    <h5>No reviews yet!</h5>
+                {{/if}}
                 </div>
             </div>
         </div>

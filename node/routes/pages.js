@@ -114,13 +114,37 @@ router.get('/book/:isbn/:edition', (req, res) => {
         // console.log(r)
         bookData = r[0]
         // console.log(bookData.title)
-        res.render('book', {
-            cover_img: bookData.cover_img,
-            title: bookData.title,
-            author: bookData.Fname_auth + " " + bookData.Lname_auth,
-            publication_name: bookData.publication_name,
-            synopsis: bookData.synopsis
+        conn.query(`
+        select AVG(stars) as stars 
+        from book_ratings
+        WHERE 
+        isbn = ${req.params.isbn} 
+        and edition =  ${req.params.edition}
+        `, (err, results, field) => {
+                if (err) console.log("err: " + err)
+                var rate = (results[0].stars)
+                conn.query(`
+                select * 
+                from book_reviews
+                WHERE 
+                isbn = ${req.params.isbn} 
+                and edition =  ${req.params.edition}
+                `, (err, reviews, field) => {
+                        if (err) console.log("err: " + err)
+                        res.render('book', {
+                            cover_img: bookData.cover_img,
+                            title: bookData.title,
+                            author: bookData.Fname_auth + " " + bookData.Lname_auth,
+                            publication_name: bookData.publication_name,
+                            synopsis: bookData.synopsis,
+                            rating: rate,
+                            reviews: reviews
+                        })
+                })
+         
+                
         })
+        
     })
 });
 
