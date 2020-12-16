@@ -16,16 +16,20 @@
             <li><a href="/">Logout</a></li>
         </ul>
     </nav>
-    <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text">EMAIL</p>
-            <p class="card-text">FNAME + LNAME</p>
-            <p class="card-text">CITY</p>
-            <p class="card-text">STATE</p>
-            
-            <a href="#" class="btn btn-primary">Edit Profile</a>
+    <div class="container mt-4">
+        <div class="card" style="width: 18rem;">
+            {{!-- <img src="..." class="card-img-top" alt="..."> --}}
+            <div class="card-body">
+                
+                <h5 class="card-title">{{username}}</h5>
+                <p class="card-text">{{email}}</p>
+                <p class="card-text">{{name}}</p>
+                <p class="card-text">{{location}}</p>
+                
+                
+                
+                <a href="#" class="btn btn-primary">Edit Profile</a>
+            </div>
         </div>
     </div>
 

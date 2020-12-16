@@ -29,15 +29,28 @@ router.get('/login',(req,res)=>{
     res.render('login');
 });
 
-router.get('/user/:id',(req,res)=>{
-    res.render('user');
+router.get('/user/:username',(req,res)=>{
+    var sql = 'SELECT * from reader WHERE username = ?'
+    conn.query(sql, req.params.username, function (err, results, field) {
+        if (err) console.log("error: " + err)
+        // console.log(results[0])
+        var userData = results[0];
+        // console.log(userData.username)
+        res.render('user', {
+            username: userData.username,
+            email: userData.email,
+            name: userData.Fname + " " + userData.Lname,
+            location: userData.city+", "+userData.state
+        })
+    } )
+    
 });
 
 router.get('/books',(req,res)=>{
     var sql = 'SELECT title, Fname_auth, Lname_auth FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
     conn.query(sql,function (error,results,fields){
         if(error){
-            console.log('defgf'+error);
+            console.log('error: '+error);
         }
         res.render('booklist',{title:'List',Data: results});
     });

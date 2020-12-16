@@ -29,7 +29,7 @@ exports.login = async (req,res) => {
         }
         
         conn.query('SELECT * from reader WHERE username = ?',[username],async(error,results) => {
-            console.log(results);
+            // console.log(results);
             if(results.length == 0){
                 res.status(401).render('login',{
                     message: 'Incorrect email or password'
