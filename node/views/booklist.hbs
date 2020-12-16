@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link rel="stylesheet" href="/style.css">
     <script src="../public/booklist.js"></script>
 
     <title>Read and Review</title>
 </head>
+
 <body>
     <nav>
         <h4>ReadnReview</h4>
         <ul>
-            <li>Home</li>
+            <li>Bookshop</li>
             <li><a href="/books">BooksList</a></li>
             <li><a href="/">Logout</a></li>
         </ul>
@@ -38,15 +41,20 @@
                 <th><h4>AUTHOR NAME</h4></th>
             </tr> 
             {{#each Data }}
-            <tr>
-                <th><a href="">{{title}}</a></th>  
-                <th><a href="">{{Fname_auth}} {{Lname_auth}}</a></th>
-            </tr>    
+            <tr>   
+                <th><a href="">{{title}}</a></th>
+
+                <th><a href={{ auth_link }}> {{Fname_auth}} {{Lname_auth}}</a></th>
+            </tr>
             {{/each}}
 
         </table>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     {{!-- <script src="booklist.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

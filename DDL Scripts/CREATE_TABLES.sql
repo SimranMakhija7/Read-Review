@@ -37,7 +37,7 @@ CREATE TABLE book_ratings(
 	username VARCHAR(50),
     isbn VARCHAR(13),
     edition INT,
-    stars INT,
+    stars INT check (stars BETWEEN 1 and 5),
     PRIMARY KEY (username,isbn,edition),
     FOREIGN KEY (username) references reader (username) on delete cascade,
     FOREIGN KEY (isbn,edition) references book (isbn,edition) on delete cascade
@@ -74,11 +74,12 @@ CREATE TABLE written_by(
 CREATE TABLE author_ratings(
 	username VARCHAR(50),
     auth_id INT,
-    stars INT,
+    stars INT check (stars BETWEEN 1 and 5),
     PRIMARY KEY (username,auth_id),
     FOREIGN KEY (username) references reader (username) on delete cascade,
     FOREIGN KEY (auth_id) references author (auth_id) on delete cascade
 );
+
 
 CREATE TABLE author_reviews(
 	username VARCHAR(50),
@@ -101,6 +102,7 @@ CREATE TABLE bookshop(
 
 CREATE TABLE has(
 	isbn VARCHAR(50),
+    quantity INT,
     edition INT,
     shop_id INT,
     PRIMARY KEY (isbn,edition,shop_id),
