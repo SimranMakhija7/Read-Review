@@ -4,7 +4,7 @@ A simple web application for book readers.
 
 ## Table of Contents
 * [Requirement Analysis](#requirement-analysis)
-* [Tehcnologies](#technologies)
+* [Technologies](#technologies)
 * [Setup](#setup)
 * [Contributors](#contributors)
 
@@ -34,5 +34,5 @@ $ npm install
 $ node app.js
 ```
 ## Contributors
-* Sonali Patel
 * Simran Makhija
+* Sonali Patel
