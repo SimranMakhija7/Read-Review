@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const dotenv  = require('dotenv');
 dotenv.config({ path:'./.env' });
 
-
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -71,6 +71,7 @@ router.get('/user/:username/edit-profile',(req,res)=>{
 })
 
 router.get('/books',(req,res)=>{
+    //console.log(getUserId);
     var sql = 'SELECT book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
     conn.query(sql,function (error,results,fields){
         if(error){
