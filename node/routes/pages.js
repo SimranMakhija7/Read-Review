@@ -170,6 +170,7 @@ router.get('/bookshops/:id',(req,res) => {
         });
     })
 })
+
 router.get('/book/:isbn/:edition', (req, res) => {
     var sql = `
         SELECT cover_img, 
@@ -209,17 +210,29 @@ router.get('/book/:isbn/:edition', (req, res) => {
                         if (err) console.log("err: " + err)
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString();
-                        res.render('book', {
-                            cover_img: bookData.cover_img,
-                            title: bookData.title,
-                            author: bookData.Fname_auth + " " + bookData.Lname_auth,
-                            publication_name: bookData.publication_name,
-                            synopsis: bookData.synopsis,
-                            rating: rate,
-                            reviews: reviews,
-                            rating_link: rating_link,
-                            review_link: review_link
-                        })
+                        sql = `
+                        SELECT genre
+                        FROM genre
+                        WHERE 
+                        isbn = ${req.params.isbn} 
+                        and edition =  ${req.params.edition}
+                        `
+                        conn.query(sql, (error, genres, f) => {
+                            if(error) console.log(error)
+                            // console.log(genres)
+                            res.render('book', {
+                                cover_img: bookData.cover_img,
+                                title: bookData.title,
+                                author: bookData.Fname_auth + " " + bookData.Lname_auth,
+                                publication_name: bookData.publication_name,
+                                synopsis: bookData.synopsis,
+                                genres: genres,
+                                rating: rate,
+                                reviews: reviews,
+                                rating_link: rating_link,
+                                review_link: review_link
+                            })
+                    })
                 })
          
                 

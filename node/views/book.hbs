@@ -24,8 +24,13 @@
                 <h3 class="card-title">{{title}}</h3>
                 <h4>{{author}} </h4>
                 <p><em>{{publication_name}}</em></p>
-                <h6>{{date_of_publication}}</h6>
                 <p class="card-text">{{synopsis}}</p>
+                <h5>Genres</h5>
+                <ul>
+                    {{#each genres}}
+                        <li>{{genre}}</li>
+                    {{/each}}
+                </ul>
                 {{#if rating}}
                 <h5>Average rating: {{rating}} stars</h5>
                 {{else}}
