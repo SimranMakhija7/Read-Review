@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql');
+const authController = require('../controllers/auth');
 const dotenv  = require('dotenv');
 dotenv.config({ path:'./.env' });
 
@@ -31,13 +32,14 @@ router.get('/login',(req,res)=>{
     res.render('login');
 });
 
-router.get('/user/:username', (req,res)=>{
+router.get('/user/:username', (req, res) => {
+    // console.log(`Hello ${req.user.username}`)
     var sql = 'SELECT * from reader WHERE username = ?'
     conn.query(sql, req.params.username, function  (err, results, field) {
         if (err) console.log("error: " + err)
         // console.log(results[0])
         var userData = results[0];
-        console.log('pages'+userData.username)
+        // console.log('pages'+userData.username)
         res.render('user', {
             email: userData.email,
             username: userData.username,
@@ -194,6 +196,8 @@ router.get('/book/:isbn/:edition', (req, res) => {
                 and edition =  ${req.params.edition}
                 `, (err, reviews, field) => {
                         if (err) console.log("err: " + err)
+                        var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
+                            review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString();
                         res.render('book', {
                             cover_img: bookData.cover_img,
                             title: bookData.title,
@@ -201,7 +205,9 @@ router.get('/book/:isbn/:edition', (req, res) => {
                             publication_name: bookData.publication_name,
                             synopsis: bookData.synopsis,
                             rating: rate,
-                            reviews: reviews
+                            reviews: reviews,
+                            rating_link: rating_link,
+                            review_link: review_link
                         })
                 })
          
@@ -262,5 +268,14 @@ router.post('/search',(req,res)=>{
         });
     }
 });
+
+router.get('/review/:type/:id', authController.isLoggedIn, (req, res) => {
+    console.log("Hi "+ req.user.username +"! add review for " + req.params.type + "with id" + req.params.id);
+    res.render('addreview')
+})
+router.get('/rating/:type/:id', authController.isLoggedIn, (req, res) => {
+    console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
+    res.render('addrating')
+})
 
 module.exports = router;

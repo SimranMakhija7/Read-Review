@@ -95,6 +95,25 @@ exports.login = async (req,res) => {
 }
 
 
+exports.isLoggedIn = (req, res, next) => {
+    // Check if the user has token in cookies. If not return the request;
+    if(!req.cookies.jwt) return res.json({ error: 'Please Login' });
+
+    const clientToken = req.cookies.jwt;
+
+    try {
+    //  Decode the client token by using same secret key that we used to sign the token
+        const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    }
+    catch(err){
+        return res.json({error: 'Invalid Token'})
+    }
+
+}
+
+
 
 
 exports.register = (req,res) => {
