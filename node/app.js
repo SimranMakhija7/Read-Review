@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const mysql = require('mysql');
 const dotenv  = require('dotenv');
+const cookieParser = require('cookie-parser');
 
 dotenv.config({ path:'./.env' });
 const app = express();
@@ -23,6 +24,7 @@ app.use(express.static(publicDirectory));
 //Parese url-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
+app.use(cookieParser());
 
 app.set('view engine','hbs');
 
