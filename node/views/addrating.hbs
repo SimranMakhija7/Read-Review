@@ -19,7 +19,10 @@
         </ul>
     </nav>
     <form method="POST" action={{post_url}}>
-        <input type="number" min=1 max=5 class="form-control" id="add_review" name="add_review" placeholder="Rate the book on a scale of 5" >
+        <div class="form-group">
+            <label for="rating" class="form-label">Your rating:</label>
+            <input type="number" min=1 max=5 class="form-control" id="rating" name="rating" placeholder="Rate the book on a scale of 5" >
+        </div>
         <br>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

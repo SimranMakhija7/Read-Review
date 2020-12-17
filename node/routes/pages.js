@@ -104,11 +104,16 @@ router.get('/author/:id', (req, res) => {
                     authData.auth_id,
                     (e, r, f) => {
                         if (e) console.log("e:" + e)
+                        var rating_link = '/rating/author/' + authData.auth_id
+                            review_link = '/review/author/' + authData.auth_id
+                        
                         res.render('author', {
                             name: authData.Fname_auth+" "+authData.Lname_auth,
                             bio: authData.bio,
                             rating: stars,
-                            reviews: r
+                            reviews: r,
+                            rating_link: rating_link,
+                            review_link: review_link
                         })
                     }
                 )
@@ -271,11 +276,92 @@ router.post('/search',(req,res)=>{
 
 router.get('/review/:type/:id', authController.isLoggedIn, (req, res) => {
     console.log("Hi "+ req.user.username +"! add review for " + req.params.type + "with id" + req.params.id);
-    res.render('addreview')
+    res.render('addreview', {
+        post_url: "/review/"+req.user.username+"/"+req.params.type+"/"+req.params.id
+    })
 })
+
 router.get('/rating/:type/:id', authController.isLoggedIn, (req, res) => {
-    console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
-    res.render('addrating')
+    // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
+    res.render('addrating', {
+        post_url: "/rating/"+req.user.username+"/"+req.params.type+"/"+req.params.id
+    })
+})
+
+router.post('/rating/:user/:type/:id', (req, res) => {
+    if (req.params.type === "book") {
+        var id = req.params.id,
+            edition = id[id.length-1],
+            isbn = id.slice(0,id.length-1);
+        // console.log("isbn: " + isbn + " edition:" + edition)
+        conn.query('INSERT INTO book_ratings SET ?', {
+            username: req.params.user,
+            isbn: isbn,
+            edition: edition,
+            stars: req.body.rating
+        },(error,results)=>{
+            if(error){
+                console.log('error');
+                res.send(error)
+            }else{
+                // console.log(results);
+                return res.redirect('/book/'+isbn+'/'+edition)
+            }
+        })
+    } else if (req.params.type === "author") {
+        conn.query('INSERT INTO author_ratings SET ?', {
+            username: req.params.user,
+            auth_id: req.params.id,
+            stars: req.body.rating
+        },(error,results)=>{
+            if(error){
+                console.log('error' + error);
+                res.send(error)
+            }else{
+                // console.log(results);
+                return res.redirect('/author/'+req.params.id)
+            }
+        })
+    }
+    
+})
+
+router.post('/review/:user/:type/:id', (req, res) => {
+    if (req.params.type === "book") {
+        var id = req.params.id,
+            edition = id[id.length-1],
+            isbn = id.slice(0,id.length-1);
+        // console.log("isbn: " + isbn + " edition:" + edition)
+        conn.query('INSERT INTO book_reviews SET ?', {
+            username: req.params.user,
+            isbn: isbn,
+            edition: edition,
+            review: req.body.review
+        },(error,results)=>{
+            if(error){
+                console.log('error');
+                res.send(error)
+            }else{
+                // console.log(results);
+                return res.redirect('/book/'+isbn+'/'+edition)
+            }
+        })
+    } else if (req.params.type === "author") {
+        conn.query('INSERT INTO author_reviews SET ?', {
+            username: req.params.user,
+            auth_id: req.params.id,
+            review: req.body.review
+        },(error,results)=>{
+            if(error){
+                console.log('error' + error);
+                res.send(error)
+            }else{
+                // console.log(results);
+                return res.redirect('/author/'+req.params.id)
+            }
+        })
+    }
+    
 })
 
 module.exports = router;
