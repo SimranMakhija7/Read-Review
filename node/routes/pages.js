@@ -32,6 +32,11 @@ router.get('/login',(req,res)=>{
     res.render('login');
 });
 
+router.get('/logout',(req,res) =>{
+    res.clearCookie('jwt');
+    res.redirect('/');
+})
+
 router.get('/user/:username', (req, res) => {
     // console.log(`Hello ${req.user.username}`)
     var sql = 'SELECT * from reader WHERE username = ?'
