@@ -31,22 +31,44 @@ router.get('/login',(req,res)=>{
     res.render('login');
 });
 
-router.get('/user/:username',(req,res)=>{
+router.get('/user/:username', (req,res)=>{
+    var sql = 'SELECT * from reader WHERE username = ?'
+    conn.query(sql, req.params.username, function  (err, results, field) {
+        if (err) console.log("error: " + err)
+        // console.log(results[0])
+        var userData = results[0];
+        console.log('pages'+userData.username)
+        res.render('user', {
+            email: userData.email,
+            username: userData.username,
+            name: userData.Fname + " " + userData.Lname,
+            profile_img: userData.profile_img,
+            location: userData.city+", "+userData.state,
+            edit_link: '/user/'+userData.username+'/edit-profile'
+        })
+    } )
+    
+});
+
+router.get('/user/:username/edit-profile',(req,res)=>{
     var sql = 'SELECT * from reader WHERE username = ?'
     conn.query(sql, req.params.username, function (err, results, field) {
         if (err) console.log("error: " + err)
         // console.log(results[0])
         var userData = results[0];
-        // console.log(userData.username)
-        res.render('user', {
+        console.log(userData.username)
+        res.render('edit_profile', {
             username: userData.username,
             email: userData.email,
-            name: userData.Fname + " " + userData.Lname,
-            location: userData.city+", "+userData.state
+            Fname: userData.Fname,
+            Lname: userData.Lname,
+            city: userData.city,
+            state: userData.state,
+            profile_img: userData.profile_img
+          
         })
     } )
-    
-});
+})
 
 router.get('/books',(req,res)=>{
     var sql = 'SELECT book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';

@@ -20,7 +20,9 @@
         <div class="card" style="width: 18rem;">
             {{!-- <img src="..." class="card-img-top" alt="..."> --}}
             <div class="card-body">
-                
+                {{#if profile_img}}
+                    <img src={{profile_img}} class="card-img-top" alt="No profile image">
+                {{/if}}
                 <h5 class="card-title">{{username}}</h5>
                 <p class="card-text">{{email}}</p>
                 <p class="card-text">{{name}}</p>
@@ -28,7 +30,7 @@
                 
                 
                 
-                <a href="#" class="btn btn-primary">Edit Profile</a>
+                <a href={{edit_link}} class="btn btn-primary">Edit Profile</a>
             </div>
         </div>
     </div>

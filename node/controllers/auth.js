@@ -16,13 +16,37 @@ var config =
 };
 const conn = new mysql.createConnection(config);
 
-
+exports.editprofile = async (req,res) => {
+    try{
+        const username = req.body.username;
+        const Fname = req.body.Fname;
+        const Lname = req.body.Lname;
+        const profile_img = req.body.profile_img;
+        const city = req.body.city;
+        const state = req.body.state;
+        console.log(username);
+        console.log(Fname);
+        if(!Fname || !Lname){
+            return res.status(400).render('login',{
+                message: 'Please provide First and Last Name'
+            })
+        }
+       
+        conn.query('UPDATE READER SET Fname = ? , Lname =  ?  , city = ? , state = ? , profile_img = ?  WHERE username = ?',[Fname,Lname,city,state,profile_img,username],async(error,results) => {
+            if(error)   console.log(error);
+            console.log(results);
+            res.status(200).redirect("/user/" + username);
+        })
+    }catch(error){
+        console.log(error);
+    }
+}
 exports.login = async (req,res) => {
     try{
         
         const username = req.body.username;
         const password = req.body.password;
-        
+        //console.log(username, password);
         if( !username || !password){
             return res.status(400).render('login',{
                 message: 'Please provide email and password'
@@ -30,7 +54,7 @@ exports.login = async (req,res) => {
         }
         
         conn.query('SELECT * from reader WHERE username = ?',[username],async(error,results) => {
-            // console.log(results);
+            console.log(results);
             if(results.length == 0){
                 res.status(401).render('login',{
                     message: 'Incorrect email or password'
@@ -43,8 +67,9 @@ exports.login = async (req,res) => {
                     })  
                 }
             }
-           
+            
             res.status(200).redirect("/user/" + username);
+            
             
         })
     }catch(error){
