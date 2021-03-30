@@ -383,4 +383,56 @@ router.post('/review/:user/:type/:id', (req, res) => {
     
 })
 
+router.get('/my_list', authController.isLoggedIn, (req, res) => {
+    var user = req.user.username;
+    // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
+    var sql = `SELECT 
+    my_list.username , book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id 
+    FROM my_list NATURAL JOIN book,written_by,author 
+    WHERE username="jdoe" 
+    AND book.isbn = written_by.isbn 
+    AND book.edition = written_by.edition 
+    AND author.auth_id=written_by.auth_id;`;
+    conn.query(sql,function (error,results,fields){
+        if(error){
+            console.log('error: '+error);
+        }
+        // console.log(results)
+        results.forEach(e => {
+            e['auth_link'] = '/author/' + e['auth_id']
+            e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
+        });
+        res.render('fav_list', {Data: results})
+    });
+})
+
+
+// router.post('/add_to_list/:id', authController.isLoggedIn, (req, res) => {
+//     // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
+//     res.render('addrating', {
+//         post_url: "/rating/"+req.user.username+"/"+req.params.id
+//     })
+// })
+
+// router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
+//         var id = req.params.id,
+//             edition = id[id.length-1],
+//             isbn = id.slice(0,id.length-1);
+//         console.log("isbn: " + isbn + " edition:" + edition)
+//         conn.query('INSERT INTO book_ratings SET ?', {
+//             username: req.params.user,
+//             isbn: isbn,
+//             edition: edition,
+//             stars: req.body.rating
+//         },(error,results)=>{
+//             if(error){
+//                 console.log('error');
+//                 res.send(error)
+//             }else{
+//                 // console.log(results);        
+//                 return res.redirect('/book/'+isbn+'/'+edition+'/1') // status code - 1: added to list, 0: plain render, 2: review added, 3: rating added
+//             }
+//         })
+// })
+
 module.exports = router;

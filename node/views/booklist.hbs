@@ -18,6 +18,7 @@
         <ul>
             <li><a href="/bookshops">Bookshop</a></li>
             <li><a href="/books">BooksList</a></li>
+            <li><a href="/my_list">My list</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
@@ -43,7 +44,7 @@
             {{#each Data }}
             <tr>   
                 <th><a href={{book_link}}>{{title}}</a></th>
-
+                
                 <th><a href={{ auth_link }}> {{Fname_auth}} {{Lname_auth}}</a></th>
             </tr>
             {{/each}}

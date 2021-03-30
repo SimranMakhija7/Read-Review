@@ -16,20 +16,26 @@
     <nav>
         <h4>ReadnReview</h4>
         <ul>
-            <li><a href="/bookshops">BooksShops</a></li>
+            <li><a href="/bookshops">Bookshop</a></li>
             <li><a href="/books">BooksList</a></li>
             <li><a href="/my_list">My list</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
     <div class="container mt-4">
-        <h3>BOOKSHOPS LIST</h3>
+        <h3>MY LIST</h3>
         <hr>
         <table>
+            <tr>
+                <th><h4>TITLE</h4></th>
+                
+                <th><h4>AUTHOR NAME</h4></th>
+            </tr> 
             {{#each Data }}
             <tr>   
-                <th><a href={{shop_link}}>{{name}}</a></th>
-                <th>{{street_no}}, {{street_name}}, {{city}}, {{state}} </th>
+                <th><a href={{book_link}}>{{title}}</a></th>
+                
+                <th><a href={{ auth_link }}> {{Fname_auth}} {{Lname_auth}}</a></th>
             </tr>
             {{/each}}
 
