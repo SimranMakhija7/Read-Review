@@ -22,12 +22,12 @@
             {{!-- <img src="..." class="card-img-top" alt="..."> --}}
             <div class="card-body">
                 {{#if bookData}}
-                    <h3 class="card-title">{{bookData.name}}</h3>
-                    <p class="card-text">{{bookData.street_no}}, {{bookData.street_name}}, {{bookData.city}}, {{bookData.state}}</p>
+                    <h3 class="card-title">{{bookData.shopname}}</h3>
+                    <p class="card-text">{{bookData.street}}, {{bookData.city}}, {{bookData.state}}</p>
                 {{/if}}
                 {{#if data}}
-                    <h3 class="card-title">{{data.0.name}}</h3>
-                    <p class="card-text">{{data.0.street_no}}, {{data.0.street_name}}, {{data.0.city}}, {{data.0.state}}</p>
+                    <h3 class="card-title">{{data.0.shopname}}</h3>
+                    <p class="card-text">{{data.0.street}}, {{data.0.city}}, {{data.0.state}}</p>
                     <h5>Book Available</h5>
                     <ul>
                         {{#each data}}

@@ -138,20 +138,22 @@ router.get('/bookshops',(req,res)=>{
             console.log('error: '+error);
         }
         results.forEach(e => {
-            e['shop_link'] = '/bookshops/'+e['shop_id']
+            e['shop_link'] = '/bookshops/'+e['email']
         })
         res.render('bookshoplist',{title:'List',Data: results});
     })
 });
 
 router.get('/bookshops/:id',(req,res) => {
-    var sql = 'SELECT * FROM bookshop WHERE shop_id = ?'
+    var sql = 'SELECT * FROM bookshop WHERE email = ?'
     conn.query(sql,req.params.id,function(error,results,field){
         if(error)   console.log(error);
         var bookData = results[0];
       
-        conn.query('select name,edition,title,publication_name,quantity,street_no,street_name,city,state from ( bookshop natural join has )  natural join book where bookshop.shop_id = ?',
-        bookData.shop_id,
+        conn.query(`select 
+        *
+        from ( bookshop natural join books_available )  natural join book where bookshop.email = ?`,
+        bookData.email,
         function(error,data,field) {
             if(error){
                 console.log(error);

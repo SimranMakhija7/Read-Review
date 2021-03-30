@@ -26,10 +26,14 @@
         <h3>BOOKSHOPS LIST</h3>
         <hr>
         <table>
+            <tr>
+                <th><h4>NAME</h4></th>
+                <th><h4>ADDRESS</h4></th>
+            </tr> 
             {{#each Data }}
             <tr>   
-                <th><a href={{shop_link}}>{{name}}</a></th>
-                <th>{{street_no}}, {{street_name}}, {{city}}, {{state}} </th>
+                <th><a href={{shop_link}}>{{shopname}}</a></th>
+                <th>{{street}}, {{city}}, {{state}} </th>
             </tr>
             {{/each}}
 
