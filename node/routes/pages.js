@@ -173,7 +173,14 @@ router.get('/bookshops/:id',(req,res) => {
     })
 })
 
-router.get('/book/:isbn/:edition', (req, res) => {
+router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
+    var user = req.user.username;
+    var fav = false;
+    conn.query(`SELECT * FROM my_list WHERE username=${"'"+user+"'"} AND isbn = ${req.params.isbn} AND edition =  ${req.params.edition}`,(e,r,f)=>{
+        if (e) console.log(e);
+        else fav = r.length!=0;
+        // console.log(fav)
+    })
     var sql = `
         SELECT cover_img, 
         title, 
@@ -211,7 +218,8 @@ router.get('/book/:isbn/:edition', (req, res) => {
                 `, (err, reviews, field) => {
                         if (err) console.log("err: " + err)
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
-                            review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString();
+                            review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString(),
+                            list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString();
                         sql = `
                         SELECT genre
                         FROM genre
@@ -232,7 +240,9 @@ router.get('/book/:isbn/:edition', (req, res) => {
                                 rating: rate,
                                 reviews: reviews,
                                 rating_link: rating_link,
-                                review_link: review_link
+                                review_link: review_link,
+                                list_link: list_link,
+                                fav: !fav
                             })
                     })
                 })
@@ -409,32 +419,24 @@ router.get('/my_list', authController.isLoggedIn, (req, res) => {
 })
 
 
-// router.post('/add_to_list/:id', authController.isLoggedIn, (req, res) => {
-//     // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
-//     res.render('addrating', {
-//         post_url: "/rating/"+req.user.username+"/"+req.params.id
-//     })
-// })
-
-// router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
-//         var id = req.params.id,
-//             edition = id[id.length-1],
-//             isbn = id.slice(0,id.length-1);
-//         console.log("isbn: " + isbn + " edition:" + edition)
-//         conn.query('INSERT INTO book_ratings SET ?', {
-//             username: req.params.user,
-//             isbn: isbn,
-//             edition: edition,
-//             stars: req.body.rating
-//         },(error,results)=>{
-//             if(error){
-//                 console.log('error');
-//                 res.send(error)
-//             }else{
-//                 // console.log(results);        
-//                 return res.redirect('/book/'+isbn+'/'+edition+'/1') // status code - 1: added to list, 0: plain render, 2: review added, 3: rating added
-//             }
-//         })
-// })
+router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
+        var id = req.params.id,
+            edition = id[id.length-1],
+            isbn = id.slice(0,id.length-1);
+        // console.log("isbn: " + isbn + " edition:" + edition)
+        conn.query('INSERT INTO my_list SET ?', {
+            username: req.user.username,
+            isbn: isbn,
+            edition: edition,
+        },(error,results)=>{
+            if(error){
+                console.log('error');
+                res.send(error)
+            }else{
+                console.log(results);        
+                return res.redirect('/book/'+isbn+'/'+edition) 
+            }
+        })
+})
 
 module.exports = router;
