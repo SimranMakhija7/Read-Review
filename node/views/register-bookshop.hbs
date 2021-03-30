@@ -12,33 +12,32 @@
         <h4>ReadnReview</h4>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="/login">Login</a></li>
+            <li><a href="/login-bookshop">Login</a></li>
         </ul>
     </nav>
     <div class="container mt-4">
         <div class="card">
             <div class="card-header">
-                Register form - Reader
+                Register form - Bookshop
             </div>
             <div class="card-body">
-                <form action="/auth/register" method="POST">
+                <form action="/auth/registerbookshop" method="POST">
 
                     {{#if message }}
                         <h4 class="alert alert-danger mt-4">{{ message }}</h4>
                     {{/if}}
                     <div class="form-group">
-                        <label for="Fname" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="Fname" name='Fname'>
+                        <label for="shopname" class="form-label">Shop Name</label>
+                        <input type="text" class="form-control" id="shopname" name='shopname'>
                     </div>
-
                     <div class="form-group">
-                        <label for="Lname" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="Lname" name='Lname'>
+                        <label for="ownername" class="form-label">Owner Name</label>
+                        <input type="text" class="form-control" id="ownername" name='ownername'>
                     </div>
-
+      
                     <div class="form-group">
-                        <label for="username" class="form-label">username</label>
-                        <input type="text" class="form-control" id="username" name='username'>
+                        <label for="street" class="form-label">Street</label>
+                        <input type="text" class="form-control" id="street" name='street'>
                     </div>
 
                     <div class="form-group">
@@ -61,13 +60,8 @@
                         <input type="password" class="form-control" id="password" name='password'>
                     </div>
 
-                    <div class="form-group">
-                        <label for="passwordConfirm" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="passwordConfirm" name='passwordConfirm'>
-                    </div>
-
                     <br>
-                    <button type="submit" class="btn btn-primary">Register User</button>
+                    <button type="submit" class="btn btn-primary">Register Bookshop</button>
                 </form>
             </div>
         </div>

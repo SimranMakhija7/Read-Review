@@ -91,22 +91,32 @@ CREATE TABLE author_reviews(
 );
 
 CREATE TABLE bookshop(
-    shop_id INT AUTO_INCREMENT ,
-    name VARCHAR(50) NOT NULL,
-    street_no INT NOT NULL,
-    street_name VARCHAR(100) NOT NULL,
+	email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(500) NOT NULL,
+    shopname VARCHAR(50) NOT NULL,
+    ownername VARCHAR(50) NOT NULL,
+    street VARCHAR(100) NOT NULL,
     city VARCHAR(50) NOT NULL,
     state VARCHAR(50) NOT NULL,
-    PRIMARY KEY (shop_id)
+    PRIMARY KEY (email)
 );
 
-CREATE TABLE has(
+CREATE TABLE books_available(
 	isbn VARCHAR(50),
     quantity INT,
     edition INT,
-    shop_id INT,
-    PRIMARY KEY (isbn,edition,shop_id),
+    email VARCHAR(100),
+    PRIMARY KEY (isbn,edition,email),
     FOREIGN KEY (isbn,edition) references book (isbn,edition) on delete cascade,
-    FOREIGN KEY (shop_id) references bookshop (shop_id) on delete cascade
+    FOREIGN KEY (email) references bookshop (email) on delete cascade
+);
+
+CREATE TABLE list(
+	isbn VARCHAR(50),
+    edition INT,
+    username VARCHAR(50),
+    PRIMARY KEY (isbn,edition,username),
+    FOREIGN KEY (isbn,edition) references book (isbn,edition) on delete cascade,
+    FOREIGN KEY (username) references reader (username) on delete cascade
 );
 

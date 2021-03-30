@@ -84,16 +84,11 @@ exports.login = async (req,res) => {
                 res.cookie('jwt',token,cookieOptions);
             
                 res.status(200).redirect("/user/" + username);
-
-            
-            
-            
         })
     }catch(error){
         console.log(error);
     }
 }
-
 
 exports.isLoggedIn = (req, res, next) => {
     // Check if the user has token in cookies. If not return the request;
@@ -112,9 +107,6 @@ exports.isLoggedIn = (req, res, next) => {
     }
 
 }
-
-
-
 
 exports.register = (req,res) => {
     // console.log(req.body);
@@ -159,7 +151,8 @@ exports.register = (req,res) => {
         checkEMail();
         checkUsername();
         hashedpass = registerUser();
-
+        var hashedpass;
+        
         conn.query('INSERT INTO reader SET ?',{
             Fname: Fname,
             Lname: Lname,
@@ -181,3 +174,110 @@ exports.register = (req,res) => {
     }
 }
 
+exports.registerbookshop = (req,res) => {
+    // console.log(req.body);
+
+    const shopname = req.body.shopname;
+    const ownername = req.body.ownername;
+    const street = req.body.street;
+    const city = req.body.city;
+    const state = req.body.state;
+    const email = req.body.email;
+    const password = req.body.password;
+
+    function checkEMail(){
+        conn.query('SELECT email from bookshop WHERE email = ?',[email],(error,results) => {
+            if(results.length > 0){
+                return res.render('register-bookshop',{
+                    message: 'email is already taken'
+                })
+            }
+        });
+    };
+    function checkEmptyString(){
+        if(!shopname || !ownername || !street || !city || !state || !email || !password){
+            return res.render('register-bookshop',{
+                message: 'all fields are mandatory'
+            })
+        }
+    };
+    async function registerUser (){
+        return hashedPassword = await bcrypt.hash(password, 8);
+    }
+
+    checkEMail();
+    checkEmptyString();
+    hashedpass = registerUser();
+
+    conn.query('INSERT INTO bookshop SET ?',{
+            shopname: shopname,
+            ownername: ownername,
+            email: email,
+            city: city,
+            state: state,
+            street: street,
+            password: hashedpass
+    },(error,results)=>{
+            if(error){
+                console.log('error');
+            }else{
+                console.log(results);
+                return res.render('register-bookshop',{
+                    message: 'User registered'
+                }) 
+            }
+    })
+    
+}
+
+exports.loginbookshop = async (req,res) => {
+    try{
+        
+        const email = req.body.email;
+        const password = req.body.password;
+        //console.log(username, password);
+        if( !email || !password){
+            return res.status(400).render('login-bookshop',{
+                message: 'Please provide email and password'
+            })
+        }
+        
+        conn.query('SELECT * from bookshop WHERE email = ?',[email],async(error,results) => {
+            console.log(results);
+            if(results.length == 0){
+                res.status(401).render('login-bookshop',{
+                    message: 'Incorrect email or password'
+                })
+            }
+            else if(results.length != 0){
+                if(!(await bcrypt.compare(password,results[0].password))){
+                    res.status(401).render('login-bookshop',{
+                        message: 'Incorrect email or password'
+                    })  
+                }
+            }
+                const email = results[0].email;
+                const token = jwt.sign({email: email},process.env.JWT_SECRET,{
+                    expiresIn: process.env.JWT_EXPIRES_IN
+                });
+
+                console.log("token"+token);
+                const cookieOptions = {
+                    expires: new Date(
+                        Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+                    ),
+                    httpOnly: true
+                }
+
+                res.cookie('jwt',token,cookieOptions);
+            
+                res.status(200).redirect("/bookshopowner/" + email);
+
+            
+            
+            
+        })
+    }catch(error){
+        console.log(error);
+    }
+}

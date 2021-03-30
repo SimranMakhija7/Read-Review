@@ -28,14 +28,26 @@ router.get('/register',(req,res)=>{
     res.render('register');
 });
 
+router.get('/register-bookshop',(req,res)=>{
+    res.render('register-bookshop');
+});
+
 router.get('/login',(req,res)=>{
     res.render('login');
 });
-
+router.get('/login-bookshop',(req,res)=>{
+    res.render('login-bookshop');
+});
 router.get('/logout',(req,res) =>{
     res.clearCookie('jwt');
     res.redirect('/');
 })
+router.get('/reader',(req,res)=>{
+    res.render('reader-landing');
+});
+router.get('/bookshop-owner',(req,res)=>{
+    res.render('bookshop-landing');
+});
 
 router.get('/user/:username', (req, res) => {
     // console.log(`Hello ${req.user.username}`)
@@ -382,5 +394,28 @@ router.post('/review/:user/:type/:id', (req, res) => {
     }
     
 })
+
+
+router.get('/bookshopowner/:str', (req, res) => {
+    // console.log(`Hello ${req.user.username}`)
+    console.log(req.params.str);
+
+    var sql = 'SELECT * from bookshop WHERE email = ?'
+    conn.query(sql, req.params.str, function  (err, results, field) {
+        if (err) console.log("error: " + err)
+        
+        var userData = results[0];
+    
+        res.render('bookshopowner', {
+            email: userData.email,
+            shopname: userData.shopname,
+            ownername: userData.ownername,
+            location: userData.street + ", " + userData.city +", "+ userData.state,
+            edit_link: ''
+        })
+    } )
+    
+});
+
 
 module.exports = router;
