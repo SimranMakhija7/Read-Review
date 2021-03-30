@@ -14,11 +14,12 @@
             <li><a href="/">Home</a></li>
             <li><a href="/bookshops">Bookshop</a></li>
             <li><a href="/books">BooksList</a></li>
+            <li><a href="/my_list">My list</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
     <div class="container mt-4">
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 50%;">
              <img src={{cover_img}} class="card-img-top" alt="...">
             <div class="card-body">
                 <h3 class="card-title">{{title}}</h3>
@@ -38,6 +39,7 @@
                 {{/if}}
                 <br/>
                 <a href={{rating_link}} class="btn btn-primary">Add Rating</a>
+                <br/>
                 {{#if reviews}}
                     <h5>Reviews</h5>
                     <ul>
@@ -50,6 +52,13 @@
                 {{/if}}
                 <br/>
                 <a href={{review_link}} class="btn btn-primary">Add Review</a>
+                <br/>
+                <br/>
+                {{#if fav}}
+                <form action={{list_link}} method="post">
+                    <input type="submit" name="upvote" value="Add to My list" class="btn btn-primary" />
+                </form>
+                {{/if}}
                 </div>
             </div>
         </div>

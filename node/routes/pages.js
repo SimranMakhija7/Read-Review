@@ -150,20 +150,22 @@ router.get('/bookshops',(req,res)=>{
             console.log('error: '+error);
         }
         results.forEach(e => {
-            e['shop_link'] = '/bookshops/'+e['shop_id']
+            e['shop_link'] = '/bookshops/'+e['email']
         })
         res.render('bookshoplist',{title:'List',Data: results});
     })
 });
 
 router.get('/bookshops/:id',(req,res) => {
-    var sql = 'SELECT * FROM bookshop WHERE shop_id = ?'
+    var sql = 'SELECT * FROM bookshop WHERE email = ?'
     conn.query(sql,req.params.id,function(error,results,field){
         if(error)   console.log(error);
         var bookData = results[0];
       
-        conn.query('select name,edition,title,publication_name,quantity,street_no,street_name,city,state from ( bookshop natural join has )  natural join book where bookshop.shop_id = ?',
-        bookData.shop_id,
+        conn.query(`select 
+        *
+        from ( bookshop natural join books_available )  natural join book where bookshop.email = ?`,
+        bookData.email,
         function(error,data,field) {
             if(error){
                 console.log(error);
@@ -183,7 +185,14 @@ router.get('/bookshops/:id',(req,res) => {
     })
 })
 
-router.get('/book/:isbn/:edition', (req, res) => {
+router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
+    var user = req.user.username;
+    var fav = false;
+    conn.query(`SELECT * FROM my_list WHERE username=${"'"+user+"'"} AND isbn = ${req.params.isbn} AND edition =  ${req.params.edition}`,(e,r,f)=>{
+        if (e) console.log(e);
+        else fav = r.length!=0;
+        // console.log(fav)
+    })
     var sql = `
         SELECT cover_img, 
         title, 
@@ -221,7 +230,8 @@ router.get('/book/:isbn/:edition', (req, res) => {
                 `, (err, reviews, field) => {
                         if (err) console.log("err: " + err)
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
-                            review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString();
+                            review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString(),
+                            list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString();
                         sql = `
                         SELECT genre
                         FROM genre
@@ -242,7 +252,9 @@ router.get('/book/:isbn/:edition', (req, res) => {
                                 rating: rate,
                                 reviews: reviews,
                                 rating_link: rating_link,
-                                review_link: review_link
+                                review_link: review_link,
+                                list_link: list_link,
+                                fav: !fav
                             })
                     })
                 })
@@ -395,27 +407,48 @@ router.post('/review/:user/:type/:id', (req, res) => {
     
 })
 
+router.get('/my_list', authController.isLoggedIn, (req, res) => {
+    var user = req.user.username;
+    // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
+    var sql = `SELECT 
+    my_list.username , book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id 
+    FROM my_list NATURAL JOIN book,written_by,author 
+    WHERE username="jdoe" 
+    AND book.isbn = written_by.isbn 
+    AND book.edition = written_by.edition 
+    AND author.auth_id=written_by.auth_id;`;
+    conn.query(sql,function (error,results,fields){
+        if(error){
+            console.log('error: '+error);
+        }
+        // console.log(results)
+        results.forEach(e => {
+            e['auth_link'] = '/author/' + e['auth_id']
+            e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
+        });
+        res.render('fav_list', {Data: results})
+    });
+})
 
-router.get('/bookshopowner/:str', (req, res) => {
-    // console.log(`Hello ${req.user.username}`)
-    console.log(req.params.str);
 
-    var sql = 'SELECT * from bookshop WHERE email = ?'
-    conn.query(sql, req.params.str, function  (err, results, field) {
-        if (err) console.log("error: " + err)
-        
-        var userData = results[0];
-    
-        res.render('bookshopowner', {
-            email: userData.email,
-            shopname: userData.shopname,
-            ownername: userData.ownername,
-            location: userData.street + ", " + userData.city +", "+ userData.state,
-            edit_link: ''
+router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
+        var id = req.params.id,
+            edition = id[id.length-1],
+            isbn = id.slice(0,id.length-1);
+        // console.log("isbn: " + isbn + " edition:" + edition)
+        conn.query('INSERT INTO my_list SET ?', {
+            username: req.user.username,
+            isbn: isbn,
+            edition: edition,
+        },(error,results)=>{
+            if(error){
+                console.log('error');
+                res.send(error)
+            }else{
+                console.log(results);        
+                return res.redirect('/book/'+isbn+'/'+edition) 
+            }
         })
-    } )
-    
-});
-
+})
 
 module.exports = router;
