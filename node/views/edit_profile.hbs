@@ -13,14 +13,15 @@
         <ul>
             <li><a href="/bookshops">Bookshop</a></li>
             <li><a href="/books">BooksList</a></li>
-            <li><a href="/my_list">My list</a></li>
+            <li><a href="/my_list">My List</a></li>
+            <li><a href="/user">My Profile</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
     <div class="container mt-4">
         <div class="card">
             <div class="card-header">
-                Edit Profile
+                Edit Profile of {{Fname}}
             </div>
             <div class="card-body">
                 <form action="/auth/editprofile" method="POST">
@@ -36,7 +37,7 @@
 
                     <div class="form-group">
                         <label for="Fname" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="Fname" name='Fname' value={{Fname}}>
+                        <input type="text" class="form-control" id="Fname" name='Fname' value="{{Fname}}">
                     </div>
 
                     <div class="form-group">
@@ -56,7 +57,7 @@
 
                     <div class="form-group">
                         <label for="state" class="form-label">State</label>
-                        <input type="text" class="form-control" id="state" name='state' value={{state}}>
+                        <input type="text" class="form-control" id="state" name='state' value="{{state}}">
                     </div>
 
                     <br>

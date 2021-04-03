@@ -120,3 +120,6 @@ CREATE TABLE list(
     FOREIGN KEY (username) references reader (username) on delete cascade
 );
 
+ALTER TABLE book
+ADD author_name varchar(255);
+

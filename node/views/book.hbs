@@ -10,11 +10,11 @@
 <body>
     <nav>
         <h4>ReadnReview</h4>
-        <ul>
-            <li><a href="/">Home</a></li>
+        <ul>            
             <li><a href="/bookshops">Bookshop</a></li>
             <li><a href="/books">BooksList</a></li>
-            <li><a href="/my_list">My list</a></li>
+            <li><a href="/my_list">My List</a></li>
+            <li><a href="/user">My Profile</a></li>
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
@@ -56,7 +56,11 @@
                 <br/>
                 {{#if fav}}
                 <form action={{list_link}} method="post">
-                    <input type="submit" name="upvote" value="Add to My list" class="btn btn-primary" />
+                    <input type="submit" name="add_to_list" value="Add to My list" class="btn btn-primary" />
+                </form>
+                {{else}}
+                <form action={{remove_link}} method="post">
+                    <input type="submit" name="remove_from_list" value="Remove from My list" class="btn btn-primary" />
                 </form>
                 {{/if}}
                 </div>

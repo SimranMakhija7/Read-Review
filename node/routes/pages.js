@@ -49,10 +49,11 @@ router.get('/bookshop-owner',(req,res)=>{
     res.render('bookshop-landing');
 });
 
-router.get('/user/:username', (req, res) => {
+router.get('/user',authController.isLoggedIn, (req, res) => {
     // console.log(`Hello ${req.user.username}`)
+    var user = req.user.username;
     var sql = 'SELECT * from reader WHERE username = ?'
-    conn.query(sql, req.params.username, function  (err, results, field) {
+    conn.query(sql, user, function  (err, results, field) {
         if (err) console.log("error: " + err)
         // console.log(results[0])
         var userData = results[0];
@@ -91,56 +92,20 @@ router.get('/user/:username/edit-profile',(req,res)=>{
 
 router.get('/books',(req,res)=>{
     //console.log(getUserId);
-    var sql = 'SELECT book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
+    var sql = 'SELECT title, author_name, isbn, edition FROM book';
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
         }
         // console.log(results)
         results.forEach(e => {
-            e['auth_link'] = '/author/' + e['auth_id']
             e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
         });
 
-        res.render('booklist',{title:'List',Data: results});
+        res.render('booklist',{title:'Book List',Data: results});
     })
 });
 
-
-router.get('/author/:id', (req, res) => {
-    var sql = 'SELECT * FROM author WHERE auth_id=?'
-    conn.query(sql, req.params.id, function (err, results, fields) {
-        if (err) console.log("error :" + err)
-        var authData = results[0];
-        conn.query('select AVG(stars) as stars from author_ratings where auth_id=?',
-            authData.auth_id,
-            (err, rating , fields) => {
-                if (err) console.log("error :" + err)
-                var stars = rating[0].stars
-                conn.query(
-                    'select * from author_reviews where auth_id =? ',
-                    authData.auth_id,
-                    (e, r, f) => {
-                        if (e) console.log("e:" + e)
-                        var rating_link = '/rating/author/' + authData.auth_id
-                            review_link = '/review/author/' + authData.auth_id
-                        
-                        res.render('author', {
-                            name: authData.Fname_auth+" "+authData.Lname_auth,
-                            bio: authData.bio,
-                            rating: stars,
-                            reviews: r,
-                            rating_link: rating_link,
-                            review_link: review_link
-                        })
-                    }
-                )
-                
-            }
-        )        
-        
-    })
-});
 
 
 router.get('/bookshops',(req,res)=>{
@@ -156,12 +121,13 @@ router.get('/bookshops',(req,res)=>{
     })
 });
 
-router.get('/bookshops/:id',(req,res) => {
+router.get('/bookshops/:email',(req,res) => {
     var sql = 'SELECT * FROM bookshop WHERE email = ?'
-    conn.query(sql,req.params.id,function(error,results,field){
+    // console.log(req.params.email);
+    conn.query(sql,req.params.email,function(error,results,field){
         if(error)   console.log(error);
+        // console.log(results)
         var bookData = results[0];
-      
         conn.query(`select 
         *
         from ( bookshop natural join books_available )  natural join book where bookshop.email = ?`,
@@ -196,16 +162,13 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
     var sql = `
         SELECT cover_img, 
         title, 
-        Fname_auth, Lname_auth,
+        author_name
         publication_name, date_of_publication, 
         synopsis, book.isbn, book.edition
-        FROM book, author, written_by 
+        FROM book
         WHERE 
         book.isbn = ${req.params.isbn} 
         and book.edition =  ${req.params.edition}
-        and book.isbn = written_by.isbn 
-        and author.auth_id = written_by.auth_id 
-        and book.edition = written_by.edition 
     `    
     conn.query(sql, (e, r, f) => {
         if (e) console.log(e);
@@ -231,7 +194,8 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                         if (err) console.log("err: " + err)
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString(),
-                            list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString();
+                            list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString(),
+                            remove_link ='/remove_from_list/'+ req.params.isbn.toString() + req.params.edition.toString();
                         sql = `
                         SELECT genre
                         FROM genre
@@ -245,7 +209,7 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                             res.render('book', {
                                 cover_img: bookData.cover_img,
                                 title: bookData.title,
-                                author: bookData.Fname_auth + " " + bookData.Lname_auth,
+                                author: bookData.author_name,
                                 publication_name: bookData.publication_name,
                                 synopsis: bookData.synopsis,
                                 genres: genres,
@@ -254,6 +218,7 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                                 rating_link: rating_link,
                                 review_link: review_link,
                                 list_link: list_link,
+                                remove_link: remove_link,
                                 fav: !fav
                             })
                     })
@@ -318,7 +283,7 @@ router.post('/search',(req,res)=>{
 });
 
 router.get('/review/:type/:id', authController.isLoggedIn, (req, res) => {
-    console.log("Hi "+ req.user.username +"! add review for " + req.params.type + "with id" + req.params.id);
+    // console.log("Hi "+ req.user.username +"! add review for " + req.params.type + "with id" + req.params.id);
     res.render('addreview', {
         post_url: "/review/"+req.user.username+"/"+req.params.type+"/"+req.params.id
     })
@@ -345,24 +310,10 @@ router.post('/rating/:user/:type/:id', (req, res) => {
         },(error,results)=>{
             if(error){
                 console.log('error');
-                res.send(error)
+                res.render('404')
             }else{
                 // console.log(results);
                 return res.redirect('/book/'+isbn+'/'+edition)
-            }
-        })
-    } else if (req.params.type === "author") {
-        conn.query('INSERT INTO author_ratings SET ?', {
-            username: req.params.user,
-            auth_id: req.params.id,
-            stars: req.body.rating
-        },(error,results)=>{
-            if(error){
-                console.log('error' + error);
-                res.send(error)
-            }else{
-                // console.log(results);
-                return res.redirect('/author/'+req.params.id)
             }
         })
     }
@@ -383,27 +334,13 @@ router.post('/review/:user/:type/:id', (req, res) => {
         },(error,results)=>{
             if(error){
                 console.log('error');
-                res.send(error)
+                res.render('404')
             }else{
                 // console.log(results);
                 return res.redirect('/book/'+isbn+'/'+edition)
             }
         })
-    } else if (req.params.type === "author") {
-        conn.query('INSERT INTO author_reviews SET ?', {
-            username: req.params.user,
-            auth_id: req.params.id,
-            review: req.body.review
-        },(error,results)=>{
-            if(error){
-                console.log('error' + error);
-                res.send(error)
-            }else{
-                // console.log(results);
-                return res.redirect('/author/'+req.params.id)
-            }
-        })
-    }
+    } 
     
 })
 
@@ -411,20 +348,17 @@ router.get('/my_list', authController.isLoggedIn, (req, res) => {
     var user = req.user.username;
     // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
     var sql = `SELECT 
-    my_list.username , book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id 
-    FROM my_list NATURAL JOIN book,written_by,author 
-    WHERE username="jdoe" 
-    AND book.isbn = written_by.isbn 
-    AND book.edition = written_by.edition 
-    AND author.auth_id=written_by.auth_id;`;
+    my_list.username , book.isbn,book.edition,title, author_name 
+    FROM my_list NATURAL JOIN book 
+    WHERE username=${"'"+user+"'"}`;
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
         }
         // console.log(results)
         results.forEach(e => {
-            e['auth_link'] = '/author/' + e['auth_id']
             e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
+            e['remove_link'] = '/remove_from_list/'+e['isbn'].toString()+e['edition'].toString()
         });
         res.render('fav_list', {Data: results})
     });
@@ -449,6 +383,27 @@ router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
                 return res.redirect('/book/'+isbn+'/'+edition) 
             }
         })
+})
+
+router.post('/remove_from_list/:id', authController.isLoggedIn, (req,res)=>{
+
+    var id = req.params.id,
+        edition = id[id.length-1],
+        isbn = id.slice(0,id.length-1);
+    // console.log("isbn: " + isbn + " edition:" + edition)
+    conn.query(`DELETE FROM my_list 
+    WHERE username = ${"'"+req.user.username+"'"}
+    AND isbn = ${isbn}
+    AND edition =${edition}
+    `,(error,results)=>{
+        if(error){
+            console.log('error');
+            res.send(error)
+        }else{
+            console.log(results);        
+            return res.redirect('/book/'+isbn+'/'+edition) 
+        }
+    })
 })
 
 router.get('/bookshopowner/:email', (req, res) => {
