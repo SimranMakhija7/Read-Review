@@ -8,5 +8,8 @@ router.post('/editprofile',authController.editprofile)
 
 router.post('/registerbookshop',authController.registerbookshop)
 router.post('/loginbookshop',authController.loginbookshop)
+router.post('/editprofilebookshop',authController.editprofilebookshop)
+
+// router.post('/addbook',authController.addbook)
 
 module.exports = router;
