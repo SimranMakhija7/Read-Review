@@ -36,7 +36,7 @@ exports.editprofile = async (req,res) => {
         conn.query('UPDATE READER SET Fname = ? , Lname =  ?  , city = ? , state = ? , profile_img = ?  WHERE username = ?',[Fname,Lname,city,state,profile_img,username],async(error,results) => {
             if(error)   console.log(error);
             console.log(results);
-            res.status(200).redirect("/user/" + username);
+            res.status(200).redirect("/user");
         })
     }catch(error){
         console.log(error);
@@ -83,7 +83,7 @@ exports.login = async (req,res) => {
 
                 res.cookie('jwt',token,cookieOptions);
             
-                res.status(200).redirect("/user/" + username);
+                res.status(200).redirect("/user");
         })
     }catch(error){
         console.log(error);

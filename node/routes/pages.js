@@ -49,10 +49,11 @@ router.get('/bookshop-owner',(req,res)=>{
     res.render('bookshop-landing');
 });
 
-router.get('/user/:username', (req, res) => {
+router.get('/user',authController.isLoggedIn, (req, res) => {
     // console.log(`Hello ${req.user.username}`)
+    var user = req.user.username;
     var sql = 'SELECT * from reader WHERE username = ?'
-    conn.query(sql, req.params.username, function  (err, results, field) {
+    conn.query(sql, user, function  (err, results, field) {
         if (err) console.log("error: " + err)
         // console.log(results[0])
         var userData = results[0];
