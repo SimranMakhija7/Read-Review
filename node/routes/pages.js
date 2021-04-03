@@ -106,41 +106,6 @@ router.get('/books',(req,res)=>{
 });
 
 
-router.get('/author/:id', (req, res) => {
-    var sql = 'SELECT * FROM author WHERE auth_id=?'
-    conn.query(sql, req.params.id, function (err, results, fields) {
-        if (err) console.log("error :" + err)
-        var authData = results[0];
-        conn.query('select AVG(stars) as stars from author_ratings where auth_id=?',
-            authData.auth_id,
-            (err, rating , fields) => {
-                if (err) console.log("error :" + err)
-                var stars = rating[0].stars
-                conn.query(
-                    'select * from author_reviews where auth_id =? ',
-                    authData.auth_id,
-                    (e, r, f) => {
-                        if (e) console.log("e:" + e)
-                        var rating_link = '/rating/author/' + authData.auth_id
-                            review_link = '/review/author/' + authData.auth_id
-                        
-                        res.render('author', {
-                            name: authData.Fname_auth+" "+authData.Lname_auth,
-                            bio: authData.bio,
-                            rating: stars,
-                            reviews: r,
-                            rating_link: rating_link,
-                            review_link: review_link
-                        })
-                    }
-                )
-                
-            }
-        )        
-        
-    })
-});
-
 
 router.get('/bookshops',(req,res)=>{
     var sql = 'SELECT * from bookshop';
@@ -155,12 +120,13 @@ router.get('/bookshops',(req,res)=>{
     })
 });
 
-router.get('/bookshops/:id',(req,res) => {
+router.get('/bookshops/:email',(req,res) => {
     var sql = 'SELECT * FROM bookshop WHERE email = ?'
-    conn.query(sql,req.params.id,function(error,results,field){
+    // console.log(req.params.email);
+    conn.query(sql,req.params.email,function(error,results,field){
         if(error)   console.log(error);
+        // console.log(results)
         var bookData = results[0];
-      
         conn.query(`select 
         *
         from ( bookshop natural join books_available )  natural join book where bookshop.email = ?`,
