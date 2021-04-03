@@ -233,53 +233,24 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
 
 router.post('/search',(req,res)=>{
     var strBook = req.body.booksearch;
-    var strAuth = req.body.authorsearch;
+    
         
-    console.log(strBook,strAuth);
-    if(strAuth && strBook){
-        conn.query('select book.title,book.isbn,book.edition,author.auth_id,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where title like"%'+strBook+'%" and (author.Fname_auth like"%'+strAuth+'%" or author.Lname_auth like"%'+strAuth+'%")',function(err, results, fields) {
-            if (err) throw err;
-            console.log(results);
-            results.forEach(e =>{
-                e['auth_link'] = '/author/' + e['auth_id']
-                e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
-            })
-            res.render('search',{
-                title:'List',
-                Data: results,
-            })
-        });
-    }
-    else if(strBook){
+    console.log(strBook);
+    if(strBook){
         //select book.title,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where title like '%ABC%';
-        conn.query('select book.title,book.isbn,book.edition,author.auth_id,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where title like"%'+strBook+'%"',function(err, results, fields) {
+        conn.query('select title,isbn,edition,author_name from  book  where title like"%'+strBook+'%"',function(err, results, fields) {
             if (err) throw err;
             results.forEach(e =>{
-                e['auth_link'] = '/author/' + e['auth_id']
                 e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
             })
             console.log(results);
             res.render('search',{
-                title:'List',
+                str:strBook,
                 Data: results,
             })
         });
     }
-    else if(strAuth){
-        conn.query('select book.title,book.isbn,book.edition,author.auth_id,author.Fname_auth,author.Lname_auth from written_by natural join book natural join author where author.Fname_auth like"%'+strAuth+'%" or author.Lname_auth like"%'+strAuth+'%"',function(err, results, fields) {
-            if (err) throw err;
-            
-            results.forEach(e =>{
-                e['auth_link'] = '/author/' + e['auth_id']
-                e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
-            })
-            console.log(results);
-            res.render('search',{
-                title:'List',
-                Data: results,
-            })
-        });
-    }
+    
 });
 
 router.get('/review/:type/:id', authController.isLoggedIn, (req, res) => {
