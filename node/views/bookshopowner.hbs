@@ -24,13 +24,13 @@
                     <h4 class="card-title">{{shopname}}</h4>
                     <h5 class="card-title">Owner : {{ownername}}</h5>
                     <p class="card-text">Address : {{location}}</p>
-                    <a href="#" class="btn btn-primary">Edit Profile</a>
+                    <a href={{edit_link}} class="btn btn-primary">Edit Profile</a>
                 </div>
                 <div style="padding: 10px;">
                     <br>
                     <div style="display: flex; justify-content:space-between; padding-right:5px">
                         <h3>Books Available</h3>
-                        <a href="#" >Add Books</a>
+                        <a href={{add_link}} >Add Books</a>
                     </div>
                     <br>
                     {{#each books}}

@@ -467,19 +467,93 @@ router.get('/bookshopowner/:email', (req, res) => {
 
             if (err) console.log("error: " + err)
             var bookData = results;
-            // console.log(results);
+            console.log(userData.street + userData.ownername);
             res.render('bookshopowner', {
                 email: userData.email,
                 shopname: userData.shopname,
                 ownername: userData.ownername,
                 location: userData.street + ", " + userData.city+", " + userData.state,
                 books: bookData,
-                edit_link: ''
+                edit_link: '/bookshopowner/'+userData.email+'/edit-profile',
+                add_link : '/bookshopowner/'+userData.email+'/add'
             })
         })
         
     } )
     
 });
+
+router.get('/bookshopowner/:email/edit-profile',(req,res)=>{
+    var sql = 'SELECT * from bookshop WHERE email = ?'
+    conn.query(sql, req.params.email, function (err, results, field) {
+        if (err) console.log("error: " + err)
+        console.log("Inside Pages" + results[0])
+        var userData = results[0];
+        console.log("Inside Pages" + userData.email)
+        res.render('edit_profile-bookshop', {
+            shopname: userData.shopname,
+            email: userData.email,
+            ownername: userData.ownername,
+            street: userData.street,
+            city: userData.city,
+            state: userData.state,         
+        })
+    } )
+})
+
+router.get('/bookshopowner/:email/add',(req,res)=>{
+    res.render('bookshop-add-book',{
+        email:req.params.email,
+        post_link : '/addbook'
+    });
+});
+
+router.post('/addbook', (req,res)=>{
+
+        const isbn = req.body.isbn;
+        const edition = req.body.edition;
+        const title = req.body.title;
+        const auth_name = req.body.auth_name;
+        const publication_name = req.body.publication_name;
+        const cover_img = req.body.cover_img;
+        const pages = req.body.pages;
+        const synopsis = req.body.synopsis;
+        var date_of_publication = req.body.date_of_publication;
+        const email = req.body.email;
+        var quantity = req.body.quantity;
+
+        date_of_publication = date_of_publication.replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2");
+        console.log(date_of_publication);
+        quantity = Number(quantity);
+        
+        //TODO 
+
+        conn.query('SELECT * from book WHERE isbn = ? AND edition = ?',[isbn,edition],async(error,results) => {
+            if(error)   console.log(error);
+            //console.log("BANANA REsult" + results);
+
+            //If book is not available add book into existing table
+            if(results.length != 0){
+                conn.query('INSERT INTO books_available (isbn,edition,email,quantity) VALUES (?,?,?,?)',[isbn,edition,email,quantity],async(error,results) => {
+                    if(error)   console.log(error);
+                    console.log(results);
+                    res.status(200).redirect("/bookshopowner/" + email);
+                })
+            }else{
+                conn.query('INSERT INTO book (isbn,edition,title,author_name,publication_name,cover_img,pages,synopsis,date_of_publication) VALUES (?,?,?,?,?,?,?,?,?)',[isbn,edition,title,auth_name,publication_name,cover_img,pages,synopsis,date_of_publication],async(error,results) => {
+                    if(error)   console.log(error);
+                    console.log(results);
+                })
+                conn.query('INSERT INTO books_available (isbn,edition,email,quantity) VALUES (?,?,?,?)',[isbn,edition,email,quantity],async(error,results) => {
+                    if(error)   console.log(error);
+                    console.log(results);
+                    res.status(200).redirect("/bookshopowner/" + email);
+                })
+            }
+            
+        })
+})
+
+
 
 module.exports = router;
