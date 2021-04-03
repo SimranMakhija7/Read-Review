@@ -314,7 +314,7 @@ router.post('/search',(req,res)=>{
 });
 
 router.get('/review/:type/:id', authController.isLoggedIn, (req, res) => {
-    console.log("Hi "+ req.user.username +"! add review for " + req.params.type + "with id" + req.params.id);
+    // console.log("Hi "+ req.user.username +"! add review for " + req.params.type + "with id" + req.params.id);
     res.render('addreview', {
         post_url: "/review/"+req.user.username+"/"+req.params.type+"/"+req.params.id
     })
@@ -409,7 +409,7 @@ router.get('/my_list', authController.isLoggedIn, (req, res) => {
     var sql = `SELECT 
     my_list.username , book.isbn,book.edition,title, author_name 
     FROM my_list NATURAL JOIN book 
-    WHERE username=${user}`;
+    WHERE username=${"'"+user+"'"}`;
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
