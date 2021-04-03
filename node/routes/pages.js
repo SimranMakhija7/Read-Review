@@ -96,7 +96,7 @@ router.get('/books',(req,res)=>{
         if(error){
             console.log('error: '+error);
         }
-        console.log(results)
+        // console.log(results)
         results.forEach(e => {
             e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
         });
@@ -385,6 +385,7 @@ router.get('/my_list', authController.isLoggedIn, (req, res) => {
         // console.log(results)
         results.forEach(e => {
             e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
+            e['remove_link'] = '/remove_from_list/'+e['isbn'].toString()+e['edition'].toString()
         });
         res.render('fav_list', {Data: results})
     });
