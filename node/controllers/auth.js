@@ -271,10 +271,7 @@ exports.loginbookshop = async (req,res) => {
 
                 res.cookie('jwt',token,cookieOptions);
             
-                res.status(200).redirect("/bookshopowner/" + email);
-
-            
-            
+                res.status(200).redirect("/bookshopowner/" + email);        
             
         })
     }catch(error){

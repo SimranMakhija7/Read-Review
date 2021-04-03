@@ -7,6 +7,179 @@
     <link rel="stylesheet" href="/style.css">
     <title>Read and Review</title>
 </head>
+<style>
+    .container {
+  width: 400px;
+  height: 500px;
+  background-color: #d4c6df;
+  margin: 50px auto;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.header i{
+  font-size: 20px;
+  color: rgba(255,255,255,0.7);
+  padding: 10px;
+  margin-top:20px;
+}
+
+.fa-bars{
+  float: left;
+  margin-left:20px;
+}
+
+.fa-bars:hover{
+  cursor: pointer;
+  animation: bars 0.3s ease-in forwards;
+}
+
+.fa-cog{
+  float: right;
+  margin-right:20px;
+}
+
+.fa-cog:hover{
+  cursor: pointer;
+  animation: rotate 1s ease-in infinite;
+}
+
+div.middle{
+  position:relative;
+  text-align: center;
+  top: 70px;
+}
+
+img.user-pic{
+  width:110px;
+  height: 110px;
+  border-radius: 100%;
+  background: rgba(255,255,255,0.7);
+  border: 5px solid rgba(255,255,255,1);
+}
+
+h4.name{
+  font-size: 20px;
+  color: rgba(7, 6, 6, 0.8);
+  padding: 5px;
+  padding-top: 10px;
+}
+
+h4.work{
+  font-size: 20px;
+  color: rgba(12, 7, 7, 0.5);
+  padding: 5px;
+  padding-top: 0px;
+}
+
+h4.social{
+  font-size: 20px;
+  color: rgba(10, 5, 5, 0.5);
+  padding: 5px;
+}
+
+.btn-follow
+{
+  position: relative;
+  padding: 15px 70px;
+  top: 30px;
+  background: rgba(255,255,255,1);
+  border: none;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #1f22f1;
+  border: 1px solid transparent;
+  transition: all 0.5s ease-in;
+}
+
+.btn-follow:hover
+{
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: #261bc4;
+  color: rgb(65, 136, 228);
+}
+
+.fa-lock{
+  font-size: 20px;
+  color: rgba(0,0,0,0.2);
+  padding-top:15px;
+}
+.h5{
+    padding-top: 5px;
+}
+
+@keyframes rotate{
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes bars{
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(90deg);
+  }
+}
+
+@keyframes img3d{
+  0%{
+    transform: rotateY(0deg);
+  }
+  100%{
+    transform: rotateY(55deg);
+  }
+}
+
+
+
+  /* transform-origin: left top;
+ animation: swing 2s ease-in forwards;
+}
+
+
+@-moz-keyframes swing {
+  0% {
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
+@-webkit-keyframes swing {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
+@keyframes swing {
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
+*/
+</style>
 <body>
     <nav>
         <h4>ReadnReview</h4>
@@ -17,22 +190,26 @@
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
-    <div class="container mt-4">
-        <div class="card" style="width: 18rem;">
-            {{!-- <img src="..." class="card-img-top" alt="..."> --}}
-            <div class="card-body">
-                {{#if profile_img}}
-                    <img src={{profile_img}} class="card-img-top" alt="No profile image">
-                {{/if}}
-                <h5 class="card-title">{{username}}</h5>
-                <p class="card-text">{{email}}</p>
-                <p class="card-text">{{name}}</p>
-                <p class="card-text">{{location}}</p>
-                
-                
-                
-                <a href={{edit_link}} class="btn btn-primary">Edit Profile</a>
-            </div>
+  
+    <div class="container">
+        <div class="header">
+            <i class="fa fa-bars"></i>
+            <i class="fa fa-cog"></i>
+        </div>
+        <div class="middle">
+            {{#if profile_img }}
+                <img src={{profile_img}} alt="" class="user-pic" />
+            {{else}}
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.jRfbG71P_UTXJl-EGCx43QAAAA%26pid%3DApi&f=1" alt="" class="user-pic" />
+            {{/if}}
+
+            <h4 class="name">Name : {{name}}</h4>
+            <h4 class="work">Usename : {{username}}</h4>
+            <h4 class="social">Email : {{email}}</h4>
+            <h4 class="social">Address : {{location}}</h4>
+            <a href={{edit_link}}>
+                <button class="btn-follow" >Edit Profile </button>
+            </a>
         </div>
     </div>
 

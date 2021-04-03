@@ -14,25 +14,46 @@
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
-    <div class="container mt-4">
-        <div class="card" style="width: 18rem;">
-            {{!-- <img src="..." class="card-img-top" alt="..."> --}}
-             {{!-- {{#each Data }}
-            <tr>   
-                <th><a href={{book_link}}>{{title}}</a></th>
+    <br><br>
+    <div class="container mt-3" style="width:fit-content;">
+            <div class="card">
+                <div class="card-header">
+                    {{email}}
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">{{shopname}}</h4>
+                    <h5 class="card-title">Owner : {{ownername}}</h5>
+                    <p class="card-text">Address : {{location}}</p>
+                    <a href="#" class="btn btn-primary">Edit Profile</a>
+                </div>
+                <div style="padding: 10px;">
+                    <br>
+                    <div style="display: flex; justify-content:space-between; padding-right:5px">
+                        <h3>Books Available</h3>
+                        <a href="#" >Add Books</a>
+                    </div>
+                    <br>
+                    {{#each books}}
+                    <ol class="list-group list-group-numbered" style="padding: 0px 5px">
+                        <li class="list-group-item d-flex justify-content-between align-items-start"  >
+                            <div class="ms-2 me-auto">
+                            <div class="fw-bold">{{title}}</div>
+                            ISBN NO. : {{isbn}}
+                            <div style="margin-left:auto">
+                                <a href="">Delete</a>
+                                <a href="">Update</a>
+                            </div>
+                                
+                            </div>
+                            <span class="badge bg-primary rounded-pill">
+                                {{quantity}} 
+                            </span>
 
-                <th><a href={{ auth_link }}> {{Fname_auth}} {{Lname_auth}}</a></th>
-            </tr>
-            {{/each}} --}}
-            <div class="card-body">
-
-                <h5 class="card-title">{{shopname}}</h5>
-                <p class="card-text">{{email}}</p>
-                <p class="card-text">{{ownername}}</p>
-                <p class="card-text">{{location}}</p>
-                <a href={{edit_link}} class="btn btn-primary">Edit Profile</a>
-            </div>
-        </div>
+                        </li>
+                    </ol>
+                    {{/each}}
+                </div>
+                
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>

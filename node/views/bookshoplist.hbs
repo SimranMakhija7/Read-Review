@@ -25,7 +25,16 @@
     <div class="container mt-4">
         <h3>BOOKSHOPS LIST</h3>
         <hr>
-        <table>
+        <ul class="list-group list-group-flush">
+            {{#each Data}}
+                <li class="list-group-item">
+                    <a href={{shop_link}}>{{shopname}}</a><br>
+                    Address : {{street}}, {{city}}, {{state}} 
+                </li>
+            {{/each}}
+        </ul>
+        
+        {{!-- <table>
             <tr>
                 <th><h4>NAME</h4></th>
                 <th><h4>ADDRESS</h4></th>
@@ -37,7 +46,7 @@
             </tr>
             {{/each}}
 
-        </table>
+        </table> --}}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     {{!-- <script src="booklist.js"></script> --}}

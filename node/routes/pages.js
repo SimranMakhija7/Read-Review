@@ -451,4 +451,35 @@ router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
         })
 })
 
+router.get('/bookshopowner/:email', (req, res) => {
+    // console.log(`Hello ${req.user.username}`)
+    var sql = 'SELECT * from bookshop WHERE email = ?'
+    conn.query(sql, req.params.email, function  (err, results, field) {
+        if (err) console.log("error: " + err)
+        // console.log(results[0])
+        var userData = results[0];
+        var sql = `SELECT B.title, B.isbn, BA.quantity
+                FROM book B 
+                INNER JOIN books_available BA ON B.isbn=BA.isbn AND B.edition=BA.edition
+                INNER JOIN bookshop BS ON BA.email = BS.email
+                WHERE BS.email = ?;`
+        conn.query(sql, req.params.email, function (err, results, field){
+
+            if (err) console.log("error: " + err)
+            var bookData = results;
+            // console.log(results);
+            res.render('bookshopowner', {
+                email: userData.email,
+                shopname: userData.shopname,
+                ownername: userData.ownername,
+                location: userData.street + ", " + userData.city+", " + userData.state,
+                books: bookData,
+                edit_link: ''
+            })
+        })
+        
+    } )
+    
+});
+
 module.exports = router;
