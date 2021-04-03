@@ -35,7 +35,7 @@ exports.editprofile = async (req,res) => {
        
         conn.query('UPDATE READER SET Fname = ? , Lname =  ?  , city = ? , state = ? , profile_img = ?  WHERE username = ?',[Fname,Lname,city,state,profile_img,username],async(error,results) => {
             if(error)   console.log(error);
-            console.log(results);
+            // console.log(results);
             res.status(200).redirect("/user");
         })
     }catch(error){
@@ -56,19 +56,20 @@ exports.login = async (req,res) => {
         }
         
         conn.query('SELECT * from reader WHERE username = ?',[username],async(error,results) => {
-            console.log(results);
+            // console.log(results);
             if(results.length == 0){
                 res.status(401).render('login',{
                     message: 'Incorrect email or password'
                 })
             }
             else if(results.length != 0){
-                if(!(await bcrypt.compare(password,results[0].password))){
+                // console.log(results[0])
+                if(!( bcrypt.compareSync(password,results[0].password))){
                     res.status(401).render('login',{
                         message: 'Incorrect email or password'
                     })  
-                }
-            }
+                }else{
+            
                 const username = results[0].username;
                 const token = jwt.sign({username: username},process.env.JWT_SECRET,{
                     expiresIn: process.env.JWT_EXPIRES_IN
@@ -85,6 +86,8 @@ exports.login = async (req,res) => {
                 res.cookie('jwt',token,cookieOptions);
             
                 res.status(200).redirect("/user");
+            }
+            }
         })
     }catch(error){
         console.log(error);
@@ -109,7 +112,7 @@ exports.isLoggedIn = (req, res, next) => {
 
 }
 
-exports.register = (req,res) => {
+exports.register = async (req,res) => {
     // console.log(req.body);
 
     const Fname = req.body.Fname;
@@ -141,7 +144,8 @@ exports.register = (req,res) => {
     };
 
     async function registerUser (){
-        return hashedPassword = await bcrypt.hash(password, 8);
+         hashedPassword = await bcrypt.hashSync(password, 8);
+         return hashedPassword;
     }
 
     if(password !== passwordConfirm){
@@ -151,8 +155,8 @@ exports.register = (req,res) => {
     }else{
         checkEMail();
         checkUsername();
-        hashedpass = registerUser();
-        var hashedpass;
+        var hashedpass = await registerUser();
+        // console.log(hashedpass)
         
         conn.query('INSERT INTO reader SET ?',{
             Fname: Fname,
@@ -166,7 +170,7 @@ exports.register = (req,res) => {
             if(error){
                 console.log('error');
             }else{
-                console.log(results);
+                // console.log(results);
                 return res.render('register',{
                     message: 'User registered'
                 }) 
@@ -175,7 +179,7 @@ exports.register = (req,res) => {
     }
 }
 
-exports.registerbookshop = (req,res) => {
+exports.registerbookshop = async (req,res) => {
     // console.log(req.body);
 
     const shopname = req.body.shopname;
@@ -203,12 +207,12 @@ exports.registerbookshop = (req,res) => {
         }
     };
     async function registerUser (){
-        return hashedPassword = await bcrypt.hash(password, 8);
+        hashedPassword = await bcrypt.hashSync(password, 8);
     }
 
     checkEMail();
     checkEmptyString();
-    hashedpass = registerUser();
+    var hashedpass = await registerUser();
 
     conn.query('INSERT INTO bookshop SET ?',{
             shopname: shopname,
@@ -233,7 +237,6 @@ exports.registerbookshop = (req,res) => {
 
 exports.loginbookshop = async (req,res) => {
     try{
-        
         const email = req.body.email;
         const password = req.body.password;
         //console.log(username, password);
@@ -251,7 +254,7 @@ exports.loginbookshop = async (req,res) => {
                 })
             }
             else if(results.length != 0){
-                if(!(await bcrypt.compare(password,results[0].password))){
+                if(!(bcrypt.compareSync(password,results[0].password))){
                     res.status(401).render('login-bookshop',{
                         message: 'Incorrect email or password'
                     })  
