@@ -40,27 +40,13 @@
             {{#each Data}}
                 <li class="list-group-item">
                     Title : <a href={{book_link}}>{{title}}</a><br>
-                    Author Name : <a href={{auth}}>{{Fname_auth}} {{Lname_auth}}</a><br> 
+                    Author Name : {{author_name}}<br> 
                 </li>
             {{/each}}
         </ul>
-        {{!-- <table>
-            <tr>
-                <th><h4>TITLE</h4></th>
-                <th><h4>AUTHOR NAME</h4></th>
-            </tr> 
-            {{#each Data }}
-            <tr>   
-                <th><a href={{book_link}}>{{title}}</a></th>
-                
-                <th><a href={{ auth_link }}> {{Fname_auth}} {{Lname_auth}}</a></th>
-            </tr>
-            {{/each}}
-
-        </table> --}}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-    {{!-- <script src="booklist.js"></script> --}}
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>

@@ -91,18 +91,17 @@ router.get('/user/:username/edit-profile',(req,res)=>{
 
 router.get('/books',(req,res)=>{
     //console.log(getUserId);
-    var sql = 'SELECT book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id FROM book,written_by,author where book.isbn = written_by.isbn and book.edition = written_by.edition and author.auth_id=written_by.auth_id';
+    var sql = 'SELECT title, author_name, isbn, edition FROM book';
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
         }
-        // console.log(results)
+        console.log(results)
         results.forEach(e => {
-            e['auth_link'] = '/author/' + e['auth_id']
             e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
         });
 
-        res.render('booklist',{title:'List',Data: results});
+        res.render('booklist',{title:'Book List',Data: results});
     })
 });
 
@@ -196,16 +195,13 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
     var sql = `
         SELECT cover_img, 
         title, 
-        Fname_auth, Lname_auth,
+        author_name
         publication_name, date_of_publication, 
         synopsis, book.isbn, book.edition
-        FROM book, author, written_by 
+        FROM book
         WHERE 
         book.isbn = ${req.params.isbn} 
         and book.edition =  ${req.params.edition}
-        and book.isbn = written_by.isbn 
-        and author.auth_id = written_by.auth_id 
-        and book.edition = written_by.edition 
     `    
     conn.query(sql, (e, r, f) => {
         if (e) console.log(e);
@@ -245,7 +241,7 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                             res.render('book', {
                                 cover_img: bookData.cover_img,
                                 title: bookData.title,
-                                author: bookData.Fname_auth + " " + bookData.Lname_auth,
+                                author: bookData.author_name,
                                 publication_name: bookData.publication_name,
                                 synopsis: bookData.synopsis,
                                 genres: genres,
@@ -411,19 +407,15 @@ router.get('/my_list', authController.isLoggedIn, (req, res) => {
     var user = req.user.username;
     // console.log("Hi " + req.user.username + "!add rating for " + req.params.type + " with id " + req.params.id);
     var sql = `SELECT 
-    my_list.username , book.isbn,book.edition,title, Fname_auth, Lname_auth, author.auth_id 
-    FROM my_list NATURAL JOIN book,written_by,author 
-    WHERE username="jdoe" 
-    AND book.isbn = written_by.isbn 
-    AND book.edition = written_by.edition 
-    AND author.auth_id=written_by.auth_id;`;
+    my_list.username , book.isbn,book.edition,title, author_name 
+    FROM my_list NATURAL JOIN book 
+    WHERE username=${user}`;
     conn.query(sql,function (error,results,fields){
         if(error){
             console.log('error: '+error);
         }
         // console.log(results)
         results.forEach(e => {
-            e['auth_link'] = '/author/' + e['auth_id']
             e['book_link'] = '/book/'+e['isbn']+'/'+e['edition']
         });
         res.render('fav_list', {Data: results})
