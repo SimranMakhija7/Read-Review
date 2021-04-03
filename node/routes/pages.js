@@ -309,24 +309,10 @@ router.post('/rating/:user/:type/:id', (req, res) => {
         },(error,results)=>{
             if(error){
                 console.log('error');
-                res.send(error)
+                res.render('404')
             }else{
                 // console.log(results);
                 return res.redirect('/book/'+isbn+'/'+edition)
-            }
-        })
-    } else if (req.params.type === "author") {
-        conn.query('INSERT INTO author_ratings SET ?', {
-            username: req.params.user,
-            auth_id: req.params.id,
-            stars: req.body.rating
-        },(error,results)=>{
-            if(error){
-                console.log('error' + error);
-                res.send(error)
-            }else{
-                // console.log(results);
-                return res.redirect('/author/'+req.params.id)
             }
         })
     }
@@ -347,27 +333,13 @@ router.post('/review/:user/:type/:id', (req, res) => {
         },(error,results)=>{
             if(error){
                 console.log('error');
-                res.send(error)
+                res.render('404')
             }else{
                 // console.log(results);
                 return res.redirect('/book/'+isbn+'/'+edition)
             }
         })
-    } else if (req.params.type === "author") {
-        conn.query('INSERT INTO author_reviews SET ?', {
-            username: req.params.user,
-            auth_id: req.params.id,
-            review: req.body.review
-        },(error,results)=>{
-            if(error){
-                console.log('error' + error);
-                res.send(error)
-            }else{
-                // console.log(results);
-                return res.redirect('/author/'+req.params.id)
-            }
-        })
-    }
+    } 
     
 })
 
