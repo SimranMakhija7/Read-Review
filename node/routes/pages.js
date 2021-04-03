@@ -193,7 +193,8 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                         if (err) console.log("err: " + err)
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString(),
-                            list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString();
+                            list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString(),
+                            remove_link ='/remove_from_list/'+ req.params.isbn.toString() + req.params.edition.toString();
                         sql = `
                         SELECT genre
                         FROM genre
@@ -216,6 +217,7 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                                 rating_link: rating_link,
                                 review_link: review_link,
                                 list_link: list_link,
+                                remove_link: remove_link,
                                 fav: !fav
                             })
                     })
@@ -407,6 +409,27 @@ router.post('/add_to_list/:id', authController.isLoggedIn, (req,res)=>{
                 return res.redirect('/book/'+isbn+'/'+edition) 
             }
         })
+})
+
+router.post('/remove_from_list/:id', authController.isLoggedIn, (req,res)=>{
+
+    var id = req.params.id,
+        edition = id[id.length-1],
+        isbn = id.slice(0,id.length-1);
+    // console.log("isbn: " + isbn + " edition:" + edition)
+    conn.query(`DELETE FROM my_list 
+    WHERE username = ${"'"+req.user.username+"'"}
+    AND isbn = ${isbn}
+    AND edition =${edition}
+    `,(error,results)=>{
+        if(error){
+            console.log('error');
+            res.send(error)
+        }else{
+            console.log(results);        
+            return res.redirect('/book/'+isbn+'/'+edition) 
+        }
+    })
 })
 
 router.get('/bookshopowner/:email', (req, res) => {

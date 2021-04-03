@@ -56,7 +56,11 @@
                 <br/>
                 {{#if fav}}
                 <form action={{list_link}} method="post">
-                    <input type="submit" name="upvote" value="Add to My list" class="btn btn-primary" />
+                    <input type="submit" name="add_to_list" value="Add to My list" class="btn btn-primary" />
+                </form>
+                {{else}}
+                <form action={{remove_link}} method="post">
+                    <input type="submit" name="remove_from_list" value="Remove from My list" class="btn btn-primary" />
                 </form>
                 {{/if}}
                 </div>
