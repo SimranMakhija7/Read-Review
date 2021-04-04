@@ -138,7 +138,8 @@ router.get('/bookshops/:email',(req,res) => {
             }
             if(data.length > 0){
                 res.render('bookshop',{
-                    data: data
+                    data: data,
+                    bookData:bookData
                 })
             }else{
                 res.render('bookshop',{
@@ -378,13 +379,11 @@ router.post('/remove_from_list/:id', authController.isLoggedIn, (req,res)=>{
 })
 
 router.get('/bookshopowner/:email', (req, res) => {
-    // console.log(`Hello ${req.user.username}`)
     var sql = 'SELECT * from bookshop WHERE email = ?'
     conn.query(sql, req.params.email, function  (err, results, field) {
         if (err) console.log("error: " + err)
-        // console.log(results[0])
         var userData = results[0];
-        var sql = `SELECT B.title, B.isbn, BA.quantity
+        var sql = `SELECT B.title, B.isbn, BA.quantity, BA.edition, BA.email
                 FROM book B 
                 INNER JOIN books_available BA ON B.isbn=BA.isbn AND B.edition=BA.edition
                 INNER JOIN bookshop BS ON BA.email = BS.email
@@ -393,7 +392,6 @@ router.get('/bookshopowner/:email', (req, res) => {
 
             if (err) console.log("error: " + err)
             var bookData = results;
-            console.log(userData.street + userData.ownername);
             res.render('bookshopowner', {
                 email: userData.email,
                 shopname: userData.shopname,
@@ -401,7 +399,7 @@ router.get('/bookshopowner/:email', (req, res) => {
                 location: userData.street + ", " + userData.city+", " + userData.state,
                 books: bookData,
                 edit_link: '/bookshopowner/'+userData.email+'/edit-profile',
-                add_link : '/bookshopowner/'+userData.email+'/add'
+                add_link : '/bookshopowner/'+userData.email+'/add',
             })
         })
         
@@ -413,9 +411,7 @@ router.get('/bookshopowner/:email/edit-profile',(req,res)=>{
     var sql = 'SELECT * from bookshop WHERE email = ?'
     conn.query(sql, req.params.email, function (err, results, field) {
         if (err) console.log("error: " + err)
-        console.log("Inside Pages" + results[0])
         var userData = results[0];
-        console.log("Inside Pages" + userData.email)
         res.render('edit_profile-bookshop', {
             shopname: userData.shopname,
             email: userData.email,
@@ -480,6 +476,36 @@ router.post('/addbook', (req,res)=>{
         })
 })
 
+router.post('/updatebook', (req,res)=>{
+
+    var quantity = req.body.quantity;
+    const isbn = req.body.isbn;
+    const edition = req.body.edition;
+    const email = req.body.email;
+
+    quantity = Number(quantity);
+    
+    conn.query('UPDATE books_available SET quantity = ? WHERE isbn = ? AND edition = ? AND email=?',[quantity,isbn,edition,email],async(error,results) => {
+        if(error)   console.log(error);
+
+        //If book is not available add book into existing table
+        res.redirect('/bookshopowner/' + email)
+        
+    })
+})
+
+router.get('/delete/:email/:isbn/:edition', function(req, res, next) {
+    var email= req.params.email;
+    var isbn= req.params.isbn;
+    var edition= req.params.edition;
+      var sql = 'DELETE FROM books_available WHERE email = ? AND isbn = ? AND edition = ?';
+      conn.query(sql, [email,isbn,edition], function (err, data) {
+      if (err) throw err;
+      console.log(data.affectedRows + " record(s) updated");
+    });
+    res.redirect('/bookshopowner/' + email);
+    
+  });
 
 
 module.exports = router;
