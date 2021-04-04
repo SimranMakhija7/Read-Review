@@ -156,7 +156,7 @@ exports.register = async (req,res) => {
         checkEMail();
         checkUsername();
         var hashedpass = await registerUser();
-        // console.log(hashedpass)
+        
         
         conn.query('INSERT INTO reader SET ?',{
             Fname: Fname,
@@ -181,7 +181,6 @@ exports.register = async (req,res) => {
 
 exports.registerbookshop = async (req,res) => {
     // console.log(req.body);
-
     const shopname = req.body.shopname;
     const ownername = req.body.ownername;
     const street = req.body.street;
@@ -208,6 +207,7 @@ exports.registerbookshop = async (req,res) => {
     };
     async function registerUser (){
         hashedPassword = await bcrypt.hashSync(password, 8);
+        return hashedPassword;
     }
 
     checkEMail();
@@ -224,7 +224,7 @@ exports.registerbookshop = async (req,res) => {
             password: hashedpass
     },(error,results)=>{
             if(error){
-                console.log('error');
+                console.log(error);
             }else{
                 console.log(results);
                 return res.render('register-bookshop',{
@@ -308,52 +308,5 @@ exports.editprofilebookshop = async (req,res) => {
     }
 }
 
-// exports.addbook = async (req,res) => {
-//     try{
-//         const isbn = req.body.isbn;
-//         const edition = req.body.edition;
-//         const title = req.body.title;
-//         const auth_name = req.body.auth_name;
-//         const publication_name = req.body.publication_name;
-//         const cover_img = req.body.cover_img;
-//         const pages = req.body.pages;
-//         const synopsis = req.body.synopsis;
-//         const date_of_publication = req.body.date_of_publication;
-//         const email = req.body.email;
 
-//         date_of_publication = date_of_publication.replace(/(\d\d)\/(\d\d)\/(\d{4})/, "$3-$1-$2");
-//         console.log(date_of_publication);
-
-//         if(!isbn || !edition || !title || !auth_name || !publication_name || !cover_img || !pages || !synopsis || !date_of_publication){
-//             return res.status(400).render('bookshop-add-book',{
-//                 message: "All fields are compulsory"
-//             })
-//         }
-//         //TODO 
-
-//         conn.query('SELECT * from book WHERE isbn = ? AND edition = ?',[isbn,edition],async(error,results) => {
-//             if(error)   console.log(error);
-//             console.log(results);
-
-//             //If book is not available add book into existing table
-//             if(results.length != 0){
-//                 conn.query('INSERT INTO book (isbn,edition,title,auth_name,publication_name,cover_img,pages,synopsis,date_of_publication) VALUES (?,?,?,?,?,?,?,?,?)',[isbn,edition,title,auth_name,publication_name,cover_img,pages,synopsis,date_of_publication],async(error,results) => {
-//                     if(error)   console.log(error);
-//                     console.log(results);
-//                 })
-//             }
-            
-//             conn.query('INSERT INTO books_available (isbn,edition,email) VALUES (?,?,?)',[isbn,edition,email],async(error,results) => {
-//                 if(error)   console.log(error);
-//                 console.log(results);
-//                 res.status(200).redirect("/bookshopowner/" + email);
-//             })
-
-
-//         })
-
-//     }catch(error){
-//         console.log(error);
-//     }
-// }
 
