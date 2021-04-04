@@ -26,19 +26,19 @@
                 <h4>{{author}} </h4>
                 <p><em>{{publication_name}}</em></p>
                 <p class="card-text">{{synopsis}}</p>
-                <h5>Genres</h5>
-                <ul>
-                    {{#each genres}}
-                        <li>{{genre}}</li>
-                    {{/each}}
-                </ul>
                 {{#if rating}}
                 <h5>Average rating: {{rating}} stars</h5>
                 {{else}}
                 <h5>No ratings yet!</h5>
                 {{/if}}
-                <br/>
-                <a href={{rating_link}} class="btn btn-primary">Add Rating</a>
+                <form method="POST" action={{add_rating}}>
+                    <div class="form-group">
+                        <label for="rating" class="form-label">Your rating:</label>
+                        <input type="number" min=1 max=5 class="form-control" id="rating" name="rating" placeholder="Rate the book on a scale of 5" >
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Add rating</button>
+                </form>
                 <br/>
                 {{#if reviews}}
                     <h5>Reviews</h5>
@@ -46,12 +46,17 @@
                         {{#each reviews}}
                             <li>{{username}}: {{review}}</li>
                         {{/each}}
-                    </ul>
+                    </ul> 
                 {{else}}
                     <h5>No reviews yet!</h5>
                 {{/if}}
-                <br/>
-                <a href={{review_link}} class="btn btn-primary">Add Review</a>
+                <form method="POST" action={{add_review}}>
+                    <div class="form-group">
+                        <label for="rating" class="form-label">Your review:</label>
+                        <input type="text" class="form-control" id="review" name="review" placeholder="Write a review in uder 500 characters" >
+                    <br>
+                    <button type="submit" class="btn btn-primary">Add rating</button>
+                </form>
                 <br/>
                 <br/>
                 {{#if fav}}

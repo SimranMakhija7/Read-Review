@@ -195,7 +195,9 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString(),
-                            remove_link ='/remove_from_list/'+ req.params.isbn.toString() + req.params.edition.toString();
+                            remove_link ='/remove_from_list/'+ req.params.isbn.toString() + req.params.edition.toString(),
+                            add_review = '/review/'+user+'/book/'+req.params.isbn.toString() + req.params.edition.toString(),
+                            add_rating = '/rating/'+user+'/book/'+req.params.isbn.toString() + req.params.edition.toString();
                         sql = `
                         SELECT genre
                         FROM genre
@@ -219,6 +221,8 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                                 review_link: review_link,
                                 list_link: list_link,
                                 remove_link: remove_link,
+                                add_rating: add_rating,
+                                add_review: add_review,
                                 fav: !fav
                             })
                     })
