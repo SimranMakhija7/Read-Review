@@ -117,7 +117,7 @@ router.get('/bookshops',(req,res)=>{
         results.forEach(e => {
             e['shop_link'] = '/bookshops/'+e['email']
         })
-        res.render('bookshoplist',{title:'List',Data: results});
+        res.render('bookshoplist',{title:'List',Data: results, nearby: false});
     })
 });
 
@@ -196,7 +196,9 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                         var rating_link = '/rating/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             review_link = '/review/book/' + req.params.isbn.toString() + req.params.edition.toString(),
                             list_link = '/add_to_list/'+ req.params.isbn.toString() + req.params.edition.toString(),
-                            remove_link ='/remove_from_list/'+ req.params.isbn.toString() + req.params.edition.toString();
+                            remove_link ='/remove_from_list/'+ req.params.isbn.toString() + req.params.edition.toString(),
+                            add_review = '/review/'+user+'/book/'+req.params.isbn.toString() + req.params.edition.toString(),
+                            add_rating = '/rating/'+user+'/book/'+req.params.isbn.toString() + req.params.edition.toString();
                         sql = `
                         SELECT genre
                         FROM genre
@@ -220,6 +222,8 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                                 review_link: review_link,
                                 list_link: list_link,
                                 remove_link: remove_link,
+                                add_rating: add_rating,
+                                add_review: add_review,
                                 fav: !fav
                             })
                     })
@@ -374,6 +378,23 @@ router.post('/remove_from_list/:id', authController.isLoggedIn, (req,res)=>{
         }else{
             console.log(results);        
             return res.redirect('/book/'+isbn+'/'+edition) 
+        }
+    })
+})
+router.post('/shops-near-me', authController.isLoggedIn, (req,res)=>{
+    var user = req.user.username;
+    var sql = `
+    SELECT bookshop.email, shopname, ownername, bookshop.street, bookshop.city, bookshop.state
+    from bookshop, reader 
+    where reader.username= ${"'"+user+"'"}
+     AND reader.city=bookshop.city;`
+    conn.query(sql,(error,results)=>{
+        if(error){
+            console.log('error');
+            res.render('404')
+        }else{
+            console.log(results);        
+            return res.render('bookshoplist',{Data:results, nearby:true}) 
         }
     })
 })

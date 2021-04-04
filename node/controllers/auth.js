@@ -193,7 +193,7 @@ exports.registerbookshop = async (req,res) => {
         conn.query('SELECT email from bookshop WHERE email = ?',[email],(error,results) => {
             if(results.length > 0){
                 return res.render('register-bookshop',{
-                    message: 'email is already taken'
+                    message: 'Email is already taken'
                 })
             }
         });
@@ -213,7 +213,7 @@ exports.registerbookshop = async (req,res) => {
     checkEMail();
     checkEmptyString();
     var hashedpass = await registerUser();
-
+    console.log(hashedpass)
     conn.query('INSERT INTO bookshop SET ?',{
             shopname: shopname,
             ownername: ownername,
@@ -224,11 +224,11 @@ exports.registerbookshop = async (req,res) => {
             password: hashedpass
     },(error,results)=>{
             if(error){
-                console.log(error);
+                console.log('error:'+error);
             }else{
                 console.log(results);
                 return res.render('register-bookshop',{
-                    message: 'User registered'
+                    message: 'Shop registered'
                 }) 
             }
     })
