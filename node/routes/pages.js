@@ -117,7 +117,7 @@ router.get('/bookshops',(req,res)=>{
         results.forEach(e => {
             e['shop_link'] = '/bookshops/'+e['email']
         })
-        res.render('bookshoplist',{title:'List',Data: results});
+        res.render('bookshoplist',{title:'List',Data: results, nearby: false});
     })
 });
 
@@ -377,6 +377,23 @@ router.post('/remove_from_list/:id', authController.isLoggedIn, (req,res)=>{
         }else{
             console.log(results);        
             return res.redirect('/book/'+isbn+'/'+edition) 
+        }
+    })
+})
+router.post('/shops-near-me', authController.isLoggedIn, (req,res)=>{
+    var user = req.user.username;
+    var sql = `
+    SELECT bookshop.email, shopname, ownername, bookshop.street, bookshop.city, bookshop.state
+    from bookshop, reader 
+    where reader.username= ${"'"+user+"'"}
+     AND reader.city=bookshop.city;`
+    conn.query(sql,(error,results)=>{
+        if(error){
+            console.log('error');
+            res.render('404')
+        }else{
+            console.log(results);        
+            return res.render('bookshoplist',{Data:results, nearby:true}) 
         }
     })
 })
