@@ -18,29 +18,49 @@
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
-    <div class="container mt-4">
-        <div class="card" style="width: 18rem;">
-            {{!-- <img src="..." class="card-img-top" alt="..."> --}}
-            <div class="card-body">
-                {{#if bookData}}
-                    <h3 class="card-title">{{bookData.shopname}}</h3>
-                    <p class="card-text">{{bookData.street}}, {{bookData.city}}, {{bookData.state}}</p>
-                {{/if}}
-                {{#if data}}
-                    <h3 class="card-title">{{data.0.shopname}}</h3>
-                    <p class="card-text">{{data.0.street}}, {{data.0.city}}, {{data.0.state}}</p>
-                    <h5>Book Available</h5>
-                    <ul>
-                        {{#each data}}
-                            <li>{{title}}, {{publication_name}},Quantity:  {{ quantity}}</li>
-                           
-                        {{/each}}
-                    </ul>
-                {{/if}}
-                    
+    <div class="container mt-3" style="width:fit-content;">
+        {{#if bookData}}
+            <div class="card">
+                <div class="card-header">
+                    {{bookData.email}}
+                </div>
+                <div class="card-body">
+                        <h4 class="card-title">{{bookData.shopname}}</h4>
+                        <h5 class="card-title">Owner : {{bookData.ownername}}</h5>
+                        <p class="card-text">Address : {{bookData.street}}, {{bookData.city}}, {{bookData.state}}</p>
                 </div>
             </div>
-        </div>
+        {{/if}}
+            <div style="padding: 10px;">
+                    <br>
+                    <div style="display: flex; justify-content:space-between; padding-right:5px">
+                        <h3>Books Available</h3>
+                    </div>
+                    <br>
+                    
+                    {{#each data}}
+                            <ol class="list-group list-group-numbered" style="padding: 0px 5px">
+                                <li class="list-group-item d-flex justify-content-between align-items-start"  >
+                                    <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{title}}</div>
+                                    <b>ISBN NO. :</b> {{isbn}}  
+                                    <b>Edition :</b> {{edition}}    
+                                    </div>
+                                    {{#if quantity}}
+                                    <span class="badge bg-primary rounded-pill">
+                                        {{quantity}} 
+                                    </span>
+                                    {{else}}
+                                    <span class="badge bg-danger rounded-pill">
+                                        Currently not available
+                                    </span>
+                                    {{/if}}
+                                </li>
+                            </ol>
+                        
+                    {{/each}}
+                </div>
+         
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
