@@ -163,7 +163,7 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
     var sql = `
         SELECT cover_img, 
         title, 
-        author_name
+        author_name,
         publication_name, date_of_publication, 
         synopsis, book.isbn, book.edition
         FROM book
@@ -208,7 +208,7 @@ router.get('/book/:isbn/:edition',authController.isLoggedIn, (req, res) => {
                         `
                         conn.query(sql, (error, genres, f) => {
                             if(error) console.log(error)
-                            // console.log(genres)
+                         
                             res.render('book', {
                                 cover_img: bookData.cover_img,
                                 title: bookData.title,

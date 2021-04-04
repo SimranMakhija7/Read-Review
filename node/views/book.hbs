@@ -18,28 +18,40 @@
             <li><a href="/logout">Logout</a></li>
         </ul>
     </nav>
-    <div class="container mt-4">
-        <div class="card" style="width: 50%;">
-             <img src={{cover_img}} class="card-img-top" alt="...">
-            <div class="card-body">
-                <h3 class="card-title">{{title}}</h3>
-                <h4>{{author}} </h4>
-                <p><em>{{publication_name}}</em></p>
-                <p class="card-text">{{synopsis}}</p>
+
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+            <img src={{cover_img}} alt="..." style="width: 400px; height:600px">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <div style="display: flex; justify-content:space-between">
+                        <div>
+                            <h4 class="card-title">{{title}}</h4>
+                            <h5 class="card-title"><em>{{author}}</em></h5><br>
+                        </div>
+                        {{#if fav}}
+                        <form action={{list_link}} method="post">
+                            <input type="submit" name="add_to_list" value="Add to My list" class="btn btn-danger" />
+                        </form>
+                        {{else}}
+                        <form action={{remove_link}} method="post">
+                            <input type="submit" name="remove_from_list" value="Remove from My list" class="btn btn-danger" />
+                        </form>
+                        {{/if}}
+                    </div>
+                    
+                    <p class="card-text">{{synopsis}}</p>
+                    <p class="card-text"><small class="text-muted">Publication : {{publication_name}}</small></p>
+                </div>
+                <hr>
                 {{#if rating}}
                 <h5>Average rating: {{rating}} stars</h5>
                 {{else}}
-                <h5>No ratings yet!</h5>
+                <h5 class="card-title">No ratings yet!</h5>
                 {{/if}}
-                <form method="POST" action={{add_rating}}>
-                    <div class="form-group">
-                        <label for="rating" class="form-label">Your rating:</label>
-                        <input type="number" min=1 max=5 class="form-control" id="rating" name="rating" placeholder="Rate the book on a scale of 5" >
-                    </div>
-                    <br>
-                    <button type="submit" class="btn btn-primary">Add rating</button>
-                </form>
-                <br/>
+                <hr>
                 {{#if reviews}}
                     <h5>Reviews</h5>
                     <ul>
@@ -50,26 +62,36 @@
                 {{else}}
                     <h5>No reviews yet!</h5>
                 {{/if}}
-                <form method="POST" action={{add_review}}>
-                    <div class="form-group">
-                        <label for="rating" class="form-label">Your review:</label>
-                        <input type="text" class="form-control" id="review" name="review" placeholder="Write a review in uder 500 characters" >
-                    <br>
-                    <button type="submit" class="btn btn-primary">Add rating</button>
-                </form>
-                <br/>
-                <br/>
-                {{#if fav}}
-                <form action={{list_link}} method="post">
-                    <input type="submit" name="add_to_list" value="Add to My list" class="btn btn-primary" />
-                </form>
-                {{else}}
-                <form action={{remove_link}} method="post">
-                    <input type="submit" name="remove_from_list" value="Remove from My list" class="btn btn-primary" />
-                </form>
-                {{/if}}
+                <hr>
+                
+                <div class="row">
+                    <div class="col-sm">
+                        <form method="POST" action={{add_rating}}>
+                            <div class="form-group">
+                                <label for="rating" class="form-label">Your rating:</label>
+                                <input type="number" min=1 max=5 class="form-control" id="rating" name="rating" placeholder="Rate the book" style="width:min-content;">
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary">Add rating</button>
+                        </form>
+                    </div>
+                    <div class="col-sm">
+                        <form method="POST" action={{add_review}}>
+                            <div class="form-group" style="padding-right: 10px;">
+                                <label for="rating" class="form-label">Your review:</label>
+                                <input type="text" class="form-control" id="review" name="review" placeholder="Write a review in uder 500 characters" >
+                            <br>
+                            <button type="submit" class="btn btn-primary">Add Review</button>
+                        </form>
+                    </div>
                 </div>
+                
+
             </div>
+            
+            
+                
+
         </div>
     </div>
 
