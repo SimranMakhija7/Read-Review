@@ -75,7 +75,7 @@ exports.login = async (req,res) => {
                     expiresIn: process.env.JWT_EXPIRES_IN
                 });
 
-                console.log("token"+token);
+                // console.log("token"+token);
                 const cookieOptions = {
                     expires: new Date(
                         Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
@@ -247,10 +247,10 @@ exports.loginbookshop = async (req,res) => {
         }
         
         conn.query('SELECT * from bookshop WHERE email = ?',[email],async(error,results) => {
-            console.log(results);
+            // console.log(results);
             if(results.length == 0){
                 res.status(401).render('login-bookshop',{
-                    message: 'Incorrect email or password'
+                    message: 'Incorrect email'
                 })
             }
             else if(results.length != 0){
@@ -258,14 +258,14 @@ exports.loginbookshop = async (req,res) => {
                     res.status(401).render('login-bookshop',{
                         message: 'Incorrect email or password'
                     })  
-                }
-            }
+                }else{
+            
                 const email = results[0].email;
                 const token = jwt.sign({email: email},process.env.JWT_SECRET,{
                     expiresIn: process.env.JWT_EXPIRES_IN
                 });
 
-                console.log("token"+token);
+                // console.log("token"+token);
                 const cookieOptions = {
                     expires: new Date(
                         Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
@@ -275,7 +275,9 @@ exports.loginbookshop = async (req,res) => {
 
                 res.cookie('jwt',token,cookieOptions);
             
-                res.status(200).redirect("/bookshopowner/" + email);        
+                res.status(200).redirect("/bookshopowner/" + email);  
+                }
+            }      
             
         })
     }catch(error){
