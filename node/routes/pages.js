@@ -393,7 +393,9 @@ router.post('/shops-near-me', authController.isLoggedIn, (req,res)=>{
             console.log('error');
             res.render('404')
         }else{
-            console.log(results);        
+            results.forEach(e => {
+                e['shop_link'] = '/bookshops/'+e['email']
+            })       
             return res.render('bookshoplist',{Data:results, nearby:true}) 
         }
     })
