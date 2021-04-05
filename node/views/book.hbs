@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/style.css">
     <title>Read and Review</title>
 </head>
+
 <body>
     <nav>
         <h4>ReadnReview</h4>
@@ -69,7 +70,7 @@
                         <form method="POST" action={{add_rating}}>
                             <div class="form-group">
                                 <label for="rating" class="form-label">Your rating:</label>
-                                <input type="number" min=1 max=5 class="form-control" id="rating" name="rating" placeholder="Rate the book" style="width:min-content;">
+                                <input type="number" min=1 max=5 class="form-control" id="rating" name="rating" placeholder="Rate the book(1-5)" style="width:min-content;">
                             </div>
                             <br>
                             <button type="submit" class="btn btn-primary">Add rating</button>
